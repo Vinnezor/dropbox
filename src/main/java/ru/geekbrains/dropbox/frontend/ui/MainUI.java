@@ -12,6 +12,7 @@ import ru.geekbrains.dropbox.backend.services.AuthentificationService;
 import ru.geekbrains.dropbox.frontend.service.FileService;
 
 import java.io.*;
+import java.util.List;
 
 
 @SpringUI
@@ -88,9 +89,9 @@ public class MainUI extends UI {
         btnUpload.setButtonCaption("Добавить");
         createUploadReciever();
         btnDownload = new Button("Скачать");
-        createBtnDownload();
+        createBtnDownloadHandler();
         btnDelete = new Button("Удалить");
-        createBtnDelete();
+        createBtnDeleteHandler();
         workPanelLayout.addComponents(btnUpload, btnDownload, btnDelete);
         workPanel.setContent(workPanelLayout);
     }
@@ -119,17 +120,20 @@ public class MainUI extends UI {
         });
     }
 
-    private void createBtnDownload () {
+    private void createBtnDownloadHandler () {
+        List<File> files = frontFileService.getFileList();
+        for (int i = 0; i < files.size(); i++) {
+            createResource(files.get(i).getName());
+        }
         btnDownload.addClickListener(clickEvent -> {
             if(focusFile == null){
                 Notification.show("Не выбран файл");
-                return;
-            }
-            createResource();
+
+            } else createResource(focusFile.getName());
         });
     }
 
-    private void createBtnDelete () {
+    private void createBtnDeleteHandler () {
         btnDelete.addClickListener(clickEvent -> {
            if(focusFile == null) {
                Notification.show("Не выбран файл");
@@ -143,25 +147,24 @@ public class MainUI extends UI {
     }
 
 
-    private void createResource() {
+    private void createResource(String fileName) {
 
         StreamResource resource = new StreamResource(new StreamResource.StreamSource() {
             @Override
             public InputStream getStream() {
                 try {
-                    return frontFileService.getFileInputStream(focusFile.getName());
+                    return frontFileService.getFileInputStream(fileName);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
                 return null;
             }
-        }, focusFile.getName());
+        }, fileName);
         if (fileDownloader == null){
             fileDownloader = new FileDownloader(resource);
             fileDownloader.extend(btnDownload);
         } else {
             fileDownloader.setFileDownloadResource(resource);
-
         }
 
     }
