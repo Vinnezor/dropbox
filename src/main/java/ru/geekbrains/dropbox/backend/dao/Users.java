@@ -1,11 +1,12 @@
-package ru.geekbrains.dropbox.dao;
+package ru.geekbrains.dropbox.backend.dao;
 
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Service
+@Repository
 public class Users {
 
     private final Map<String, String> users = new HashMap<>();

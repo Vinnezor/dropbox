@@ -1,8 +1,8 @@
-package ru.geekbrains.dropbox.services;
+package ru.geekbrains.dropbox.backend.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.geekbrains.dropbox.dao.Users;
+import ru.geekbrains.dropbox.backend.dao.Users;
 
 @Service
 public class Authentification  implements AuthentificationService{
