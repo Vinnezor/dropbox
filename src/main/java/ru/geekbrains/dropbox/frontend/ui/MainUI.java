@@ -59,7 +59,7 @@ public class MainUI extends UI {
 
     private void createFileList () {
         fileList.addColumn(File::getName).setCaption("Имя файла");
-        fileList.addColumn(File::length).setCaption("размер в байтах");
+        fileList.addColumn((file) -> (file.length() / 1024 / 1024)).setCaption("размер в кбайтах");
         fillFileList();
         fileList.addItemClickListener(itemClick -> focusFile = itemClick.getItem());
     }
