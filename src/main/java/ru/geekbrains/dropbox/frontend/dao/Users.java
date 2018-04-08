@@ -1,7 +1,6 @@
-package ru.geekbrains.dropbox.backend.dao;
+package ru.geekbrains.dropbox.frontend.dao;
 
 import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;

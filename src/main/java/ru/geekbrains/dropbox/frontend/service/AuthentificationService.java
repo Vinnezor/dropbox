@@ -1,4 +1,4 @@
-package ru.geekbrains.dropbox.backend.services;
+package ru.geekbrains.dropbox.frontend.service;
 
 public interface AuthentificationService {
 

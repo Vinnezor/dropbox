@@ -1,14 +1,13 @@
 package ru.geekbrains.dropbox.frontend.ui;
 
 import com.vaadin.server.FileDownloader;
-import com.vaadin.server.Resource;
 import com.vaadin.server.StreamResource;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.ui.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import ru.geekbrains.dropbox.backend.services.AuthentificationService;
+import ru.geekbrains.dropbox.frontend.service.AuthentificationService;
 import ru.geekbrains.dropbox.frontend.service.FileService;
 
 import java.io.*;
