@@ -106,8 +106,9 @@ public class MainView extends VerticalLayout implements View {
         btnDownload.addClickListener(clickEvent -> {
             if(focusFile == null){
                 Notification.show("Не выбран файл");
-
-            } else createResource(focusFile.getName());
+            } else {
+                createResource(focusFile.getName());
+            }
         });
     }
 
@@ -118,6 +119,7 @@ public class MainView extends VerticalLayout implements View {
             } else {
                 if (frontFileService.deleteFile(focusFile.getName())) {
                     fillFileList();
+                    focusFile = null;
                 }
             }
 
@@ -125,7 +127,10 @@ public class MainView extends VerticalLayout implements View {
     }
 
     private void createLogoutHandler() {
-        btnLogout.addClickListener((clickEvent -> getUI().getNavigator().navigateTo(LoginView.NAME)) );
+        btnLogout.addClickListener((clickEvent -> {
+            getUI().getSession().close();
+            getUI().getPage().setLocation("/logout");
+        }));
     }
 
     private void createResource(String fileName) {

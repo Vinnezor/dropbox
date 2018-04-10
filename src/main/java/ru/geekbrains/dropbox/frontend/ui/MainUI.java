@@ -1,6 +1,5 @@
 package ru.geekbrains.dropbox.frontend.ui;
 
-import com.vaadin.annotations.Theme;
 import com.vaadin.navigator.Navigator;
 
 import com.vaadin.navigator.PushStateNavigation;
