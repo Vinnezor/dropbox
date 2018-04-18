@@ -165,11 +165,24 @@ public class MainView extends VerticalLayout implements View {
     private void createAddNewFilterHandler() {
         btnAddNewSearchFilter.addClickListener((clickEvent) -> {
            TextField textField = new TextField();
-           searchPanelLayout.addComponent(
+           HorizontalLayout horizontal = new HorizontalLayout();
+           searchPanelLayout.addComponent(horizontal, filterList.size() + searchPanelLayout.getComponentIndex(searchWorkArea));
+           Button btnDeleteFilter = new Button("X");
+           btnDeleteFilter.addStyleName("tiny");
+           horizontal.addComponents(
                    textField,
-                   filterList.size() + searchPanelLayout.getComponentIndex(searchWorkArea)
+                   btnDeleteFilter
            );
+           createDeleteFilterHandler(btnDeleteFilter, textField);
            filterList.add(textField);
+
+        });
+    }
+
+    private void createDeleteFilterHandler(Button btn, TextField tx) {
+        btn.addClickListener(clickEvent -> {
+            filterList.remove(tx);
+            searchPanelLayout.removeComponent(btn.getParent());
         });
     }
 
