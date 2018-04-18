@@ -1,11 +1,11 @@
 package ru.geekbrains.dropbox.frontend.ui.client;
 
 import com.vaadin.navigator.View;
-import com.vaadin.navigator.ViewChangeListener;
 
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.*;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 @UIScope
 public class LoginView extends VerticalLayout implements View {
 
+    @Autowired
     private AuthenticationManager manager;
 
     public static final String NAME = "login";
@@ -26,17 +27,12 @@ public class LoginView extends VerticalLayout implements View {
     private FormLayout loginForm;
 
 
-    public LoginView (AuthenticationManager manager) {
-        this.manager = manager;
+    public LoginView () {
         createAuthPanel();
         addComponents(loginAndPassTextFields, btnAuth);
         createAuthListener();
     }
 
-    @Override
-    public void enter(ViewChangeListener.ViewChangeEvent event) {
-
-    }
 
     private void createAuthPanel () {
 
@@ -57,7 +53,7 @@ public class LoginView extends VerticalLayout implements View {
     private void createAuthListener () {
         btnAuth.addClickListener((clickEvent -> {
             try {
-                Authentication auth = new UsernamePasswordAuthenticationToken(textLogin.getValue(), textPass.getValue());
+                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(textLogin.getValue(), textPass.getValue());
                 SecurityContextHolder.getContext().setAuthentication(manager.authenticate(auth));
                 getUI().getNavigator().navigateTo(MainView.NAME);
             } catch (Exception e) {

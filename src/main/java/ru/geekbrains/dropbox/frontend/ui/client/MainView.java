@@ -10,40 +10,51 @@ import com.vaadin.server.StreamResource;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.*;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import ru.geekbrains.dropbox.frontend.service.FileService;
 
-
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
+
 
 @Component
 @UIScope
 public class MainView extends VerticalLayout implements View {
 
-
+    @Autowired
+    @Qualifier("frontFileService")
+    FileService frontFileService;
 
     public static final String NAME = "";
     private HorizontalLayout workPanelLayout;
+    private HorizontalLayout searchWorkArea;
+    private VerticalLayout searchPanelLayout;
 
     private Grid<File> fileList;
+    private List<TextField> filterList;
     private Upload btnUpload;
     private Button btnDownload;
     private Button btnDelete;
     private Button btnLogout;
+    private Button btnAddNewSearchFilter;
+    private Button btnFind;
 
-    private FileService frontFileService;
     private File focusFile;
     private FileDownloader fileDownloader;
 
-    public MainView(FileService frontFileService) {
-        this.frontFileService = frontFileService;
+    public MainView() {
         fileList = new Grid<>();
+        filterList = new ArrayList<>();
         workPanelLayout = new HorizontalLayout();
+        searchPanelLayout = new VerticalLayout();
         createWorkPanel();
         createFileList();
         createLogoutHandler();
-        addComponents(fileList, workPanelLayout);
+        createSearchPanel();
+        addComponents(fileList, workPanelLayout, searchPanelLayout);
     }
 
     @Override
@@ -70,18 +81,25 @@ public class MainView extends VerticalLayout implements View {
     private void createWorkPanel () {
         btnUpload = new Upload();
         btnUpload.setButtonCaption("Добавить");
-
         btnDownload = new Button("Скачать");
-
         btnDelete = new Button("Удалить");
-
         btnLogout = new Button("Выйти");
-
         workPanelLayout.addComponents(btnUpload, btnDownload, btnDelete, btnLogout);
     }
 
-
-
+    private void createSearchPanel(){
+        Label nameOfFilterBlock = new Label("Поиск по файлам");
+        searchWorkArea = new HorizontalLayout();
+        TextField searchFilterField = new TextField();
+        filterList.add(searchFilterField);
+        btnAddNewSearchFilter = new Button("+");
+        createAddNewFilterHandler();
+        btnAddNewSearchFilter.addStyleName("tiny");
+        btnFind = new Button("Искать");
+        createFindHandler();
+        searchWorkArea.addComponents(searchFilterField, btnAddNewSearchFilter);
+        searchPanelLayout.addComponents(nameOfFilterBlock ,searchWorkArea, btnFind);
+    }
 
     private void createUploadReciever () {
         btnUpload.setReceiver((String fileName, String mimeType) -> {
@@ -92,7 +110,7 @@ public class MainView extends VerticalLayout implements View {
                 return stream;
             } catch (IOException e) {
                 e.printStackTrace();
-                Notification.show("Не удалось загрузить файл");
+                Notification.show("Не удалось загрузить файл").setDelayMsec(1000);
             }
             return null;
         });
@@ -115,15 +133,26 @@ public class MainView extends VerticalLayout implements View {
     private void createBtnDeleteHandler () {
         btnDelete.addClickListener(clickEvent -> {
             if(focusFile == null) {
-                Notification.show("Не выбран файл");
+                Notification.show("Не выбран файл").setDelayMsec(1000);
             } else {
                 if (frontFileService.deleteFile(focusFile.getName())) {
                     fillFileList();
                     focusFile = null;
                 }
             }
-
         });
+    }
+
+    private void createFindHandler() {
+        btnFind.addClickListener((clickEvent) -> {
+            fileList.setItems(
+                frontFileService.getFileList().stream().filter(
+                        file -> filterList.stream().anyMatch(
+                                filter -> file.getName().contains(filter.getValue())
+                        )
+            ));
+       });
+
     }
 
     private void createLogoutHandler() {
@@ -131,6 +160,17 @@ public class MainView extends VerticalLayout implements View {
             getUI().getSession().close();
             getUI().getPage().setLocation("/logout");
         }));
+    }
+
+    private void createAddNewFilterHandler() {
+        btnAddNewSearchFilter.addClickListener((clickEvent) -> {
+           TextField textField = new TextField();
+           searchPanelLayout.addComponent(
+                   textField,
+                   filterList.size() + searchPanelLayout.getComponentIndex(searchWorkArea)
+           );
+           filterList.add(textField);
+        });
     }
 
     private void createResource(String fileName) {

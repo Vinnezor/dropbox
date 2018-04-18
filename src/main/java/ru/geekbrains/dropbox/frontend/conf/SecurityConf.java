@@ -24,7 +24,7 @@ public class SecurityConf extends WebSecurityConfigurerAdapter {
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth
                 .inMemoryAuthentication().passwordEncoder(passwordEncoder())
-                .withUser("user1").password("user1").roles("USER")
+                .withUser("user1").password("pass1").roles("USER")
                 .and()
                 .withUser("user2").password("user2").roles("USER");
     }
@@ -68,7 +68,5 @@ public class SecurityConf extends WebSecurityConfigurerAdapter {
     public AuthenticationManager authenticationManagerBean () throws Exception {
         return super.authenticationManagerBean();
     }
-
-
 
 }
