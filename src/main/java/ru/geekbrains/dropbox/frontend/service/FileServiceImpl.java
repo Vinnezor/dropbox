@@ -1,7 +1,6 @@
 package ru.geekbrains.dropbox.frontend.service;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -18,29 +17,30 @@ public class FileServiceImpl implements FileService {
 
 
     @Override
-    @PreAuthorize("hasRole('USER')")
+    //@PreAuthorize("hasAnyRole('USER')")
     public OutputStream getFileOutputStream(String fileName) throws IOException {
         File file = new File(filePath + "\\" + fileName);
         return new FileOutputStream(file);
+
     }
 
 
     @Override
-    @PreAuthorize("hasRole('USER')")
+    //@PreAuthorize("hasAnyRole('USER')")
     public File getFileByName(String fileName) {
         return new File(filePath + "\\" + fileName);
     }
 
 
     @Override
-    @PreAuthorize("hasRole('USER')")
+    //@PreAuthorize("hasAnyRole('USER')")
     public InputStream getFileInputStream(String fileName) throws FileNotFoundException {
         return new FileInputStream(new File(filePath + "\\" + fileName));
     }
 
 
     @Override
-    @PreAuthorize("hasRole('USER')")
+    //@PreAuthorize("hasAnyRole('USER')")
     public List<File> getFileList() {
         clearFileList();
         File[] files;
@@ -55,14 +55,14 @@ public class FileServiceImpl implements FileService {
 
 
     @Override
-    @PreAuthorize("hasRole('USER')")
+    //@PreAuthorize("hasAnyRole('USER')")
     public void clearFileList() {
         if (!fileList.isEmpty()) fileList.clear();
     }
 
 
     @Override
-    @PreAuthorize("hasRole('USER')")
+    //@PreAuthorize("hasAnyRole('USER')")
     public boolean deleteFile(String fileName) {
         for (int i = 0; i < fileList.size(); i++) {
             if(fileList.get(i).getName().equals(fileName)) {

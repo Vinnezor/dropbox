@@ -9,6 +9,7 @@ import com.vaadin.ui.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.geekbrains.dropbox.frontend.ui.client.LoginView;
 import ru.geekbrains.dropbox.frontend.ui.client.MainView;
+import ru.geekbrains.dropbox.frontend.ui.client.RegistrationView;
 
 
 @SpringUI
@@ -21,6 +22,9 @@ public class MainUI extends UI {
     @Autowired
     private LoginView loginView;
 
+    @Autowired
+    private RegistrationView registrationView;
+
     private Navigator navigator;
 
     @Override
@@ -29,6 +33,8 @@ public class MainUI extends UI {
         navigator = new Navigator(this, this);
         navigator.addView(MainView.NAME, mainView);
         navigator.addView(LoginView.NAME, loginView);
+        navigator.addView(RegistrationView.NAME, registrationView);
+
 
     }
 

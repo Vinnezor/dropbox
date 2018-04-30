@@ -8,7 +8,6 @@ import com.vaadin.ui.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -20,33 +19,46 @@ public class LoginView extends VerticalLayout implements View {
     private AuthenticationManager manager;
 
     public static final String NAME = "login";
+
+    //layout
+    private HorizontalLayout loginAndPassTextFields;
+    private HorizontalLayout btnsPanel;
+
+    //TextFields
     private TextField textLogin;
     private PasswordField textPass;
+
+    //Buttons
     private Button btnAuth;
-    private HorizontalLayout loginAndPassTextFields;
-    private FormLayout loginForm;
+    private Button btnRegistration;
+
 
 
     public LoginView () {
         createAuthPanel();
-        addComponents(loginAndPassTextFields, btnAuth);
-        createAuthListener();
+        addComponents(loginAndPassTextFields, btnsPanel);
     }
 
 
     private void createAuthPanel () {
-
-        loginForm = new FormLayout();
         loginAndPassTextFields = new HorizontalLayout();
+
         textLogin = new TextField("Username");
-        loginForm.addComponent(textLogin);
         textLogin.setPlaceholder("Логин");
+
         textPass = new PasswordField("Password");
-        loginForm.addComponent(textPass);
         textPass.setPlaceholder("Пароль");
+        loginAndPassTextFields.addComponents(textLogin, textPass);
+
+        btnsPanel = new HorizontalLayout();
+
         btnAuth = new Button("Авторизация");
-        loginForm.addComponent(btnAuth);
-        loginAndPassTextFields.addComponents(loginForm);
+        createAuthListener();
+
+        btnRegistration = new Button("Регистрация");
+        createRegistrationListener();
+
+        btnsPanel.addComponents(btnAuth, btnRegistration);
 
     }
 
@@ -60,5 +72,9 @@ public class LoginView extends VerticalLayout implements View {
                 e.printStackTrace();
             }
         }));
+    }
+
+    private void createRegistrationListener() {
+        btnRegistration.addClickListener(clickEvent -> getUI().getNavigator().navigateTo(RegistrationView.NAME));
     }
 }

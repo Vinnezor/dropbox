@@ -1,4 +1,4 @@
-package ru.geekbrains.dropbox.frontend.conf;
+package ru.geekbrains.dropbox.server.authorization.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import ru.geekbrains.dropbox.server.authorization.service.UserService;
 
 @Configuration
 @EnableWebSecurity
@@ -20,13 +21,18 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConf extends WebSecurityConfigurerAdapter {
 
+    @Autowired
+    UserService userService;
+
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth
-                .inMemoryAuthentication().passwordEncoder(passwordEncoder())
-                .withUser("user1").password("pass1").roles("USER")
-                .and()
-                .withUser("user2").password("user2").roles("USER");
+        auth.userDetailsService(userService);
+
+//        auth
+//                .inMemoryAuthentication().passwordEncoder(passwordEncoder())
+//                .withUser("user1").password("pass1").roles("USER")
+//                .and()
+//                .withUser("user2").password("user2").roles("USER");
     }
 
     @Override
