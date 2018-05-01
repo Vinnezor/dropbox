@@ -55,7 +55,7 @@ public class RegistrationView extends VerticalLayout implements View {
         btnRegistration = new Button("Зарегистрироваться");
         createRegistrationHandler();
         btnReturn = new Button("Вернуться");
-
+        createReturnHandler();
         btnsPanel.addComponents(btnRegistration, btnReturn);
 
 
@@ -86,6 +86,10 @@ public class RegistrationView extends VerticalLayout implements View {
                 Notification.show("Неправильное заполнение полей").setDelayMsec(2000);
             }
         });
+    }
+
+    private void createReturnHandler() {
+        btnReturn.addClickListener(clickEvent -> getUI().getNavigator().navigateTo(LoginView.NAME));
     }
 
 
