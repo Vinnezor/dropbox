@@ -24,6 +24,7 @@ public class User implements UserDetails {
     @Indexed(unique = true)
     private String username;
     private String password;
+    private String email;
     private List<UserRole> authorities;
     private boolean accountNonExpired;
     private boolean accountNonLocked;
