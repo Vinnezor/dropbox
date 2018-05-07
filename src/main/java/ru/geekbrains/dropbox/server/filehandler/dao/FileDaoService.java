@@ -1,12 +1,17 @@
 package ru.geekbrains.dropbox.server.filehandler.dao;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
+import java.util.List;
 
 public interface FileDaoService {
 
-    OutputStream getFileOutputStream(String fileName) throws IOException;
-    InputStream getFileInputStream(String fileName) throws FileNotFoundException;
+    boolean createDir(String path);
+    boolean dirExists(String path);
+    List<File> getFileList();
+    List<File> getDirList();
+    OutputStream getFileOutputStream(String filePath) throws IOException;
+    InputStream getFileInputStream(String filePath) throws FileNotFoundException;
+    boolean deleteFile(String fileName);
+    void clearFileList();
+    void setPath(String path);
 }

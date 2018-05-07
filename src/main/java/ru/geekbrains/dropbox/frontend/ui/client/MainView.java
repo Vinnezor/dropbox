@@ -81,7 +81,7 @@ public class MainView extends VerticalLayout implements View {
 
 
     private void fillFileList() {
-        fileList.setItems(fileService.getFileList());
+        fileList.setItems(fileService.getFileNameList());
     }
 
 
@@ -125,7 +125,7 @@ public class MainView extends VerticalLayout implements View {
     }
 
     private void createBtnDownloadHandler () {
-        List<File> files = fileService.getFileList();
+        List<File> files = fileService.getFileNameList();
         for (int i = 0; i < files.size(); i++) {
             createResource(files.get(i).getName());
         }
@@ -154,7 +154,7 @@ public class MainView extends VerticalLayout implements View {
     private void createBtnFindHandler() {
         btnFind.addClickListener((clickEvent) -> {
             fileList.setItems(
-                    fileService.getFileList().stream().filter(
+                    fileService.getFileNameList().stream().filter(
                         file -> filterList.stream().anyMatch(
                                 filter -> file.getName().contains(filter.getValue())
                         )

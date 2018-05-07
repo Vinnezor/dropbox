@@ -7,12 +7,11 @@ import java.util.List;
 
 public interface FileService {
 
-    boolean createDir(String path);
+
     OutputStream getFileOutputStream (String fileName) throws IOException;
     File getFileByName (String fileName);
     InputStream getFileInputStream( String fileName) throws FileNotFoundException;
-    List<File> getFileList ();
-    void clearFileList();
+    List<File> getFileNameList ();
     boolean deleteFile(String fileName);
     void setUser(User user);
 }
