@@ -1,4 +1,4 @@
-package ru.geekbrains.dropbox.frontend.dao;
+package ru.geekbrains.dropbox.server.filehandler.dao;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -9,7 +9,7 @@ import java.io.*;
 @Repository
 public class FileDaoImpl implements FileDaoService {
 
-    @Value("${filePath}")
+    @Value("${filesPath}")
     private String filePath;
 
 

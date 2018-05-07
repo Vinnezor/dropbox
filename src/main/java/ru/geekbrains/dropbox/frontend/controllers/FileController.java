@@ -5,15 +5,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import ru.geekbrains.dropbox.frontend.service.FileService;
-
-import java.awt.*;
+import ru.geekbrains.dropbox.server.filehandler.service.FileService;
 
 @RestController
 public class FileController {
 
     @Autowired
-    @Qualifier("frontFileService")
+    @Qualifier("fileService")
     FileService fileService;
 
     @RequestMapping(value = "/files/m1/{$fileName}", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)

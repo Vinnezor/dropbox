@@ -1,7 +1,5 @@
 package ru.geekbrains.dropbox.frontend.ui.client;
 
-
-
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.FileDownloader;
@@ -12,21 +10,22 @@ import com.vaadin.ui.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import ru.geekbrains.dropbox.frontend.service.FileService;
+import ru.geekbrains.dropbox.server.authorization.dao.User;
+import ru.geekbrains.dropbox.server.filehandler.service.FileService;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-
 
 @Component
 @UIScope
 public class MainView extends VerticalLayout implements View {
 
     @Autowired
-    @Qualifier("frontFileService")
-    FileService frontFileService;
+    @Qualifier("fileService")
+    FileService fileService;
 
     public static final String NAME = "";
     private HorizontalLayout workPanelLayout;
@@ -45,6 +44,8 @@ public class MainView extends VerticalLayout implements View {
     private File focusFile;
     private FileDownloader fileDownloader;
 
+    private User user;
+
     public MainView() {
         fileList = new Grid<>();
         filterList = new ArrayList<>();
@@ -52,17 +53,24 @@ public class MainView extends VerticalLayout implements View {
         searchPanelLayout = new VerticalLayout();
         createWorkPanel();
         createFileList();
-        createLogoutHandler();
+        createBtnLogoutHandler();
         createSearchPanel();
         addComponents(fileList, workPanelLayout, searchPanelLayout);
     }
 
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
+        setUser();
         createUploadReciever();
         createBtnDownloadHandler();
         createBtnDeleteHandler();
         fillFileList();
+    }
+
+    private void setUser () {
+        user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(user == null) throw new RuntimeException("Пользователь вошел, а юзера нет.");
+        fileService.setUser(user);
     }
 
     private void createFileList () {
@@ -71,9 +79,9 @@ public class MainView extends VerticalLayout implements View {
         fileList.addItemClickListener(itemClick -> focusFile = itemClick.getItem());
     }
 
-    //заполняем грид данными
+
     private void fillFileList() {
-        fileList.setItems(frontFileService.getFileList());
+        fileList.setItems(fileService.getFileList());
     }
 
 
@@ -96,7 +104,7 @@ public class MainView extends VerticalLayout implements View {
         createAddNewFilterHandler();
         btnAddNewSearchFilter.addStyleName("tiny");
         btnFind = new Button("Искать");
-        createFindHandler();
+        createBtnFindHandler();
         searchWorkArea.addComponents(searchFilterField, btnAddNewSearchFilter);
         searchPanelLayout.addComponents(nameOfFilterBlock ,searchWorkArea, btnFind);
     }
@@ -105,7 +113,7 @@ public class MainView extends VerticalLayout implements View {
         btnUpload.setReceiver((String fileName, String mimeType) -> {
             //return OutputStream
             try {
-                OutputStream stream = frontFileService.getFileOutputStream(fileName);
+                OutputStream stream = fileService.getFileOutputStream(fileName);
                 fillFileList();
                 return stream;
             } catch (IOException e) {
@@ -117,7 +125,7 @@ public class MainView extends VerticalLayout implements View {
     }
 
     private void createBtnDownloadHandler () {
-        List<File> files = frontFileService.getFileList();
+        List<File> files = fileService.getFileList();
         for (int i = 0; i < files.size(); i++) {
             createResource(files.get(i).getName());
         }
@@ -135,7 +143,7 @@ public class MainView extends VerticalLayout implements View {
             if(focusFile == null) {
                 Notification.show("Не выбран файл").setDelayMsec(1000);
             } else {
-                if (frontFileService.deleteFile(focusFile.getName())) {
+                if (fileService.deleteFile(focusFile.getName())) {
                     fillFileList();
                     focusFile = null;
                 }
@@ -143,10 +151,10 @@ public class MainView extends VerticalLayout implements View {
         });
     }
 
-    private void createFindHandler() {
+    private void createBtnFindHandler() {
         btnFind.addClickListener((clickEvent) -> {
             fileList.setItems(
-                frontFileService.getFileList().stream().filter(
+                    fileService.getFileList().stream().filter(
                         file -> filterList.stream().anyMatch(
                                 filter -> file.getName().contains(filter.getValue())
                         )
@@ -155,7 +163,7 @@ public class MainView extends VerticalLayout implements View {
 
     }
 
-    private void createLogoutHandler() {
+    private void createBtnLogoutHandler() {
         btnLogout.addClickListener((clickEvent -> {
             getUI().getSession().close();
             getUI().getPage().setLocation("/logout");
@@ -192,7 +200,7 @@ public class MainView extends VerticalLayout implements View {
             @Override
             public InputStream getStream() {
                 try {
-                    return frontFileService.getFileInputStream(fileName);
+                    return fileService.getFileInputStream(fileName);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }

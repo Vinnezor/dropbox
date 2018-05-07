@@ -1,4 +1,4 @@
-package ru.geekbrains.dropbox.frontend.dao;
+package ru.geekbrains.dropbox.server.filehandler.dao;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
