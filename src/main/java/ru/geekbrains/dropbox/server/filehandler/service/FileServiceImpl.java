@@ -8,7 +8,6 @@ import ru.geekbrains.dropbox.server.filehandler.dao.FileDaoService;
 
 import javax.annotation.PostConstruct;
 import java.io.*;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -17,41 +16,38 @@ public class FileServiceImpl implements FileService {
 
     @Autowired
     FileDaoService fileDao;
-
     @Value("${filesPath}")
     private String filesPath;
-    private User user;
+
     private String userName;
     private String delimeter = "\\";
+    private String pathToUserDir;
 
+    private User user;
 
     @PostConstruct
     public void init() {
         fileDao.createDir(filesPath);
     }
 
-
-
     @Override
     //@PreAuthorize("hasAnyRole('USER')")
     public OutputStream getFileOutputStream(String fileName) throws IOException {
-        String path = filesPath + delimeter + userName + delimeter + fileName;
-        return fileDao.getFileOutputStream(path);
+        return fileDao.getFileOutputStream(pathToUserDir + delimeter + fileName);
     }
 
 
     @Override
     //@PreAuthorize("hasAnyRole('USER')")
     public File getFileByName(String fileName) {
-        return new File(filesPath + delimeter + userName + delimeter + fileName);
+        return new File(pathToUserDir + delimeter + fileName);
     }
 
 
     @Override
     //@PreAuthorize("hasAnyRole('USER')")
     public InputStream getFileInputStream(String fileName) throws FileNotFoundException {
-        String path = filesPath + delimeter + userName + delimeter + fileName;
-        return new FileInputStream(path);
+        return new FileInputStream(pathToUserDir + delimeter + fileName);
     }
 
 
@@ -72,8 +68,10 @@ public class FileServiceImpl implements FileService {
     public void setUser(User user) {
          this.user = user;
          userName = user.getUsername();
-         String path = filesPath + delimeter + userName;
-         if (!fileDao.dirExists(path)) fileDao.createDir(path);
-         fileDao.setPath(path);
+         pathToUserDir  = filesPath + delimeter + userName;
+         if (!fileDao.dirExists(pathToUserDir)) fileDao.createDir(pathToUserDir);
+         fileDao.setPath(pathToUserDir);
+
+
     }
 }
