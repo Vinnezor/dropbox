@@ -20,7 +20,7 @@ public class FileDaoImpl implements FileDaoService {
     @Override
     public boolean createDir(String path) {
         File dir = new File(path);
-        if (dirExists(path)) {
+        if (!dirExists(path)) {
             return new File(path).mkdirs();
         }
         return false;

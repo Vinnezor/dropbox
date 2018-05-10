@@ -15,20 +15,17 @@ import java.util.List;
 @Service("fileService")
 public class FileServiceImpl implements FileService {
 
-
-
     @Autowired
-    FileDaoService fileDao;
-    @Value("${filesPath}")
+    private FileDaoService fileDao;
+    @Value("${rootFilesDir}")
     private String filesPath;
     private String userName;
     private String pathToUserDir;
 
-    private User user;
-
     @PostConstruct
     public void init() {
-        fileDao.createDir(filesPath);
+        filesPath = FileDaoImpl.SEPARATOR + filesPath;
+        if (!fileDao.dirExists(filesPath)) fileDao.createDir(filesPath);
     }
 
     @Override
@@ -67,12 +64,9 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public void setUser(User user) {
-         this.user = user;
          userName = user.getUsername();
          pathToUserDir  = filesPath + FileDaoImpl.SEPARATOR + userName;
          if (!fileDao.dirExists(pathToUserDir)) fileDao.createDir(pathToUserDir);
          fileDao.setPath(pathToUserDir);
-
-
     }
 }
