@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import ru.geekbrains.dropbox.server.filehandler.service.FileService;
+import ru.geekbrains.dropbox.modules.filehandler.service.FileService;
 
 @RestController
 public class FileController {

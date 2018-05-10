@@ -5,7 +5,7 @@ import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.geekbrains.dropbox.server.authorization.registration.UserRegistration;
+import ru.geekbrains.dropbox.modules.authorization.registration.UserRegistration;
 
 @Component
 @UIScope

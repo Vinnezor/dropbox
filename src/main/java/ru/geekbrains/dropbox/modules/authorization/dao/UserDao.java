@@ -1,4 +1,4 @@
-package ru.geekbrains.dropbox.server.authorization.dao;
+package ru.geekbrains.dropbox.modules.authorization.dao;
 
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;

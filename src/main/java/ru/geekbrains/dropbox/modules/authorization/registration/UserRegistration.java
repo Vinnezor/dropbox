@@ -1,4 +1,4 @@
-package ru.geekbrains.dropbox.server.authorization.registration;
+package ru.geekbrains.dropbox.modules.authorization.registration;
 
 public interface UserRegistration {
 

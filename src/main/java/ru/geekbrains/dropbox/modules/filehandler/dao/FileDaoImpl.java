@@ -1,21 +1,21 @@
-package ru.geekbrains.dropbox.server.filehandler.dao;
+package ru.geekbrains.dropbox.modules.filehandler.dao;
 import lombok.Setter;
 import org.springframework.stereotype.Repository;
 
 import java.io.*;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 
 @Repository
 public class FileDaoImpl implements FileDaoService {
 
+    public static final String SEPARATOR = File.separator;
+
     @Setter
     private String path;
-    private String delimeter = "\\";
-    private List<File> dirNamesList =  new ArrayList<>();
+    private List<File> dirList =  new ArrayList<>();
 
     @Override
     public boolean createDir(String path) {
@@ -45,7 +45,7 @@ public class FileDaoImpl implements FileDaoService {
 
     @Override
     public boolean deleteFile(String fileName) {
-        File file = new File(path + delimeter + fileName);
+        File file = new File(path + SEPARATOR + fileName);
         if(file.exists()) return file.delete();
         throw new RuntimeException("Несуществующий файл запрошен на удаление");
     }

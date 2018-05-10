@@ -11,6 +11,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
+
 @Component
 @UIScope
 public class LoginView extends VerticalLayout implements View {
@@ -37,6 +39,7 @@ public class LoginView extends VerticalLayout implements View {
     public LoginView () {
         createAuthPanel();
         addComponents(loginAndPassTextFields, btnsPanel);
+        System.out.println();
     }
 
 

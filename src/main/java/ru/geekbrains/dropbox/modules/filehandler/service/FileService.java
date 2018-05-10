@@ -1,6 +1,6 @@
-package ru.geekbrains.dropbox.server.filehandler.service;
+package ru.geekbrains.dropbox.modules.filehandler.service;
 
-import ru.geekbrains.dropbox.server.authorization.dao.User;
+import ru.geekbrains.dropbox.modules.authorization.dao.User;
 
 import java.io.*;
 import java.util.List;
@@ -9,9 +9,9 @@ public interface FileService {
 
 
     OutputStream getFileOutputStream (String fileName) throws IOException;
-    File getFileByName (String fileName);
     InputStream getFileInputStream( String fileName) throws FileNotFoundException;
-    List<File> getFileNameList ();
+    List<File> getFileList ();
+    File getFileByName(String fileName);
     boolean deleteFile(String fileName);
     void setUser(User user);
 }

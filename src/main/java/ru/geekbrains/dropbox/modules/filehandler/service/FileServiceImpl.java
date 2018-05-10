@@ -1,10 +1,11 @@
-package ru.geekbrains.dropbox.server.filehandler.service;
+package ru.geekbrains.dropbox.modules.filehandler.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import ru.geekbrains.dropbox.server.authorization.dao.User;
-import ru.geekbrains.dropbox.server.filehandler.dao.FileDaoService;
+import ru.geekbrains.dropbox.modules.authorization.dao.User;
+import ru.geekbrains.dropbox.modules.filehandler.dao.FileDaoImpl;
+import ru.geekbrains.dropbox.modules.filehandler.dao.FileDaoService;
 
 import javax.annotation.PostConstruct;
 import java.io.*;
@@ -14,13 +15,13 @@ import java.util.List;
 @Service("fileService")
 public class FileServiceImpl implements FileService {
 
+
+
     @Autowired
     FileDaoService fileDao;
     @Value("${filesPath}")
     private String filesPath;
-
     private String userName;
-    private String delimeter = "\\";
     private String pathToUserDir;
 
     private User user;
@@ -33,27 +34,27 @@ public class FileServiceImpl implements FileService {
     @Override
     //@PreAuthorize("hasAnyRole('USER')")
     public OutputStream getFileOutputStream(String fileName) throws IOException {
-        return fileDao.getFileOutputStream(pathToUserDir + delimeter + fileName);
+        return fileDao.getFileOutputStream(pathToUserDir + FileDaoImpl.SEPARATOR + fileName);
     }
 
 
     @Override
     //@PreAuthorize("hasAnyRole('USER')")
     public File getFileByName(String fileName) {
-        return new File(pathToUserDir + delimeter + fileName);
+        return new File(pathToUserDir + FileDaoImpl.SEPARATOR + fileName);
     }
 
 
     @Override
     //@PreAuthorize("hasAnyRole('USER')")
     public InputStream getFileInputStream(String fileName) throws FileNotFoundException {
-        return new FileInputStream(pathToUserDir + delimeter + fileName);
+        return new FileInputStream(pathToUserDir + FileDaoImpl.SEPARATOR + fileName);
     }
 
 
     @Override
     //@PreAuthorize("hasAnyRole('USER')")
-    public List<File> getFileNameList() {
+    public List<File> getFileList() {
         return fileDao.getFileList();
     }
 
@@ -68,7 +69,7 @@ public class FileServiceImpl implements FileService {
     public void setUser(User user) {
          this.user = user;
          userName = user.getUsername();
-         pathToUserDir  = filesPath + delimeter + userName;
+         pathToUserDir  = filesPath + FileDaoImpl.SEPARATOR + userName;
          if (!fileDao.dirExists(pathToUserDir)) fileDao.createDir(pathToUserDir);
          fileDao.setPath(pathToUserDir);
 

@@ -1,4 +1,4 @@
-package ru.geekbrains.dropbox.server.authorization.dao;
+package ru.geekbrains.dropbox.modules.authorization.dao;
 
 import org.springframework.security.core.GrantedAuthority;
 

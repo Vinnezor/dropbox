@@ -1,6 +1,5 @@
-package ru.geekbrains.dropbox.server.authorization.service;
+package ru.geekbrains.dropbox.modules.authorization.service;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,13 +8,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import ru.geekbrains.dropbox.server.authorization.dao.User;
-import ru.geekbrains.dropbox.server.authorization.dao.UserDao;
-import ru.geekbrains.dropbox.server.authorization.dao.UserRole;
+import ru.geekbrains.dropbox.modules.authorization.dao.User;
+import ru.geekbrains.dropbox.modules.authorization.dao.UserDao;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.List;
 
 
 @Service

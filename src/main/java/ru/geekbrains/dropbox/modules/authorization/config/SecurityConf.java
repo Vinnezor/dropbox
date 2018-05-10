@@ -1,4 +1,4 @@
-package ru.geekbrains.dropbox.server.authorization.config;
+package ru.geekbrains.dropbox.modules.authorization.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import ru.geekbrains.dropbox.server.authorization.service.UserService;
+import ru.geekbrains.dropbox.modules.authorization.service.UserService;
 
 @Configuration
 @EnableWebSecurity

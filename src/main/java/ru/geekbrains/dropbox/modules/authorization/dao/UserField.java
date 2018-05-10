@@ -1,4 +1,4 @@
-package ru.geekbrains.dropbox.server.authorization.dao;
+package ru.geekbrains.dropbox.modules.authorization.dao;
 
 public enum UserField {
     USER_NAME("username");

@@ -1,12 +1,12 @@
-package ru.geekbrains.dropbox.server.authorization.registration;
+package ru.geekbrains.dropbox.modules.authorization.registration;
 
 
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.geekbrains.dropbox.server.authorization.dao.User;
-import ru.geekbrains.dropbox.server.authorization.dao.UserRole;
-import ru.geekbrains.dropbox.server.authorization.service.UserService;
+import ru.geekbrains.dropbox.modules.authorization.dao.User;
+import ru.geekbrains.dropbox.modules.authorization.dao.UserRole;
+import ru.geekbrains.dropbox.modules.authorization.service.UserService;
 
 import java.util.ArrayList;
 import java.util.List;

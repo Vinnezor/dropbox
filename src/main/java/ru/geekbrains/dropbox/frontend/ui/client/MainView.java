@@ -12,8 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import ru.geekbrains.dropbox.server.authorization.dao.User;
-import ru.geekbrains.dropbox.server.filehandler.service.FileService;
+import ru.geekbrains.dropbox.modules.authorization.dao.User;
+import ru.geekbrains.dropbox.modules.filehandler.service.FileService;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ public class MainView extends VerticalLayout implements View {
 
     @Autowired
     @Qualifier("fileService")
-    FileService fileService;
+    private FileService fileService;
 
     public static final String NAME = "";
     private HorizontalLayout workPanelLayout;
@@ -43,6 +43,7 @@ public class MainView extends VerticalLayout implements View {
 
     private File focusFile;
     private FileDownloader fileDownloader;
+
 
     private User user;
 
@@ -81,7 +82,7 @@ public class MainView extends VerticalLayout implements View {
 
 
     private void fillFileList() {
-        fileList.setItems(fileService.getFileNameList());
+        fileList.setItems(fileService.getFileList());
     }
 
 
@@ -125,7 +126,7 @@ public class MainView extends VerticalLayout implements View {
     }
 
     private void createBtnDownloadHandler () {
-        List<File> files = fileService.getFileNameList();
+        List<File> files = fileService.getFileList();
         for (int i = 0; i < files.size(); i++) {
             createResource(files.get(i).getName());
         }
@@ -154,7 +155,7 @@ public class MainView extends VerticalLayout implements View {
     private void createBtnFindHandler() {
         btnFind.addClickListener((clickEvent) -> {
             fileList.setItems(
-                    fileService.getFileNameList().stream().filter(
+                    fileService.getFileList().stream().filter(
                         file -> filterList.stream().anyMatch(
                                 filter -> file.getName().contains(filter.getValue())
                         )
