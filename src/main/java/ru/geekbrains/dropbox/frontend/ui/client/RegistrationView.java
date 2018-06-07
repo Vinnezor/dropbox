@@ -19,6 +19,8 @@ public class RegistrationView extends VerticalLayout implements View {
     //layout
     private HorizontalLayout btnsPanel;
 
+    private Alignment alignmentField = Alignment.MIDDLE_CENTER;
+
     //TextFields
     private TextField userNameField;
     private PasswordField passwordField;
@@ -43,6 +45,8 @@ public class RegistrationView extends VerticalLayout implements View {
                 emailField,
                 btnsPanel
                 );
+        components.forEach(component -> setComponentAlignment(component, alignmentField));
+
     }
 
     private void createLoginForm() {
@@ -57,7 +61,6 @@ public class RegistrationView extends VerticalLayout implements View {
         btnReturn = new Button("Вернуться");
         createReturnHandler();
         btnsPanel.addComponents(btnRegistration, btnReturn);
-
 
     }
 
@@ -90,6 +93,13 @@ public class RegistrationView extends VerticalLayout implements View {
 
     private void createReturnHandler() {
         btnReturn.addClickListener(clickEvent -> getUI().getNavigator().navigateTo(LoginView.NAME));
+    }
+
+    private void clearTextField() {
+        userNameField.clear();
+        passwordField.clear();
+        passwordFieldRepeat.clear();
+        emailField.clear();
     }
 
 

@@ -24,13 +24,14 @@ public class LoginView extends VerticalLayout implements View {
 
     public static final String NAME = "login";
     private static final String cloudImage = "/image/cloud1.png";
+    private static final String failedAuthMessage = "Неверный логин или пароль";
     private static String basePath = VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
 
     //layout
     private HorizontalLayout loginAndPassTextFields;
     private HorizontalLayout btnsPanel;
 
-    private Alignment center = Alignment.MIDDLE_CENTER;
+    private Alignment alignment = Alignment.MIDDLE_CENTER;
 
     //TextFields
     private TextField textLogin;
@@ -49,10 +50,7 @@ public class LoginView extends VerticalLayout implements View {
         image.setWidth("250");
         createAuthPanel();
         addComponents(image, loginAndPassTextFields, btnsPanel);
-        setComponentAlignment(loginAndPassTextFields, center);
-        setComponentAlignment(btnsPanel, center);
-        setComponentAlignment(image, center);
-
+        components.forEach(component -> setComponentAlignment(component, alignment));
     }
 
 
@@ -82,12 +80,20 @@ public class LoginView extends VerticalLayout implements View {
         btnAuth.addClickListener((clickEvent -> {
             try {
                 UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(textLogin.getValue(), textPass.getValue());
+                clearTextFields();
                 SecurityContextHolder.getContext().setAuthentication(manager.authenticate(auth));
                 getUI().getNavigator().navigateTo(MainView.NAME);
             } catch (Exception e) {
+                Notification.show(failedAuthMessage).setDelayMsec(3000);
                 e.printStackTrace();
             }
+
         }));
+    }
+
+    private void clearTextFields() {
+        textLogin.clear();
+        textPass.clear();
     }
 
     private void createRegistrationListener() {
