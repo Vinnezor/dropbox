@@ -19,7 +19,7 @@ import java.io.File;
 @UIScope
 public class LoginView extends VerticalLayout implements View {
 
-    @Autowired
+
     private AuthenticationManager manager;
 
     public static final String NAME = "login";
@@ -42,8 +42,9 @@ public class LoginView extends VerticalLayout implements View {
     private Button btnRegistration;
 
 
-
-    public LoginView () {
+    @Autowired
+    public LoginView (AuthenticationManager manager) {
+        this.manager = manager;
         FileResource fileResource = new FileResource(new File(basePath + cloudImage));
         Image image = new Image("", fileResource);
         image.setHeight("150");

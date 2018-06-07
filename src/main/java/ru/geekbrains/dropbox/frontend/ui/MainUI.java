@@ -16,16 +16,19 @@ import ru.geekbrains.dropbox.frontend.ui.client.RegistrationView;
 @PushStateNavigation
 public class MainUI extends UI {
 
-    @Autowired
+
     private MainView mainView;
-
-    @Autowired
     private LoginView loginView;
-
-    @Autowired
     private RegistrationView registrationView;
 
     private Navigator navigator;
+
+    @Autowired
+    public MainUI(MainView mainView, LoginView loginView, RegistrationView registrationView) {
+        this.mainView = mainView;
+        this.loginView = loginView;
+        this.registrationView = registrationView;
+    }
 
     @Override
     protected void init(VaadinRequest request) {

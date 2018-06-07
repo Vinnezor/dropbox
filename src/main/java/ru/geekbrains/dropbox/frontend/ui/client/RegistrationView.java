@@ -11,8 +11,8 @@ import ru.geekbrains.dropbox.modules.authorization.registration.UserRegistration
 @UIScope
 public class RegistrationView extends VerticalLayout implements View {
 
-    @Autowired
-    UserRegistration userRegistration;
+
+    private UserRegistration userRegistration;
 
     public static final String NAME = "registration";
 
@@ -33,8 +33,9 @@ public class RegistrationView extends VerticalLayout implements View {
 
     private Label errorLabel;
 
-
-    RegistrationView () {
+    @Autowired
+    RegistrationView (UserRegistration userRegistration) {
+        this.userRegistration = userRegistration;
         errorLabel = new Label();
         createLoginForm();
         addComponents(
@@ -80,6 +81,7 @@ public class RegistrationView extends VerticalLayout implements View {
                     userRegistration.setUserEmail(userEmail);
                     userRegistration.createNewUser();
                     if(userRegistration.validateRegistration(userName)) {
+                        clearTextField();
                         getUI().getNavigator().navigateTo(LoginView.NAME);
                     }
                 } else {
@@ -92,7 +94,10 @@ public class RegistrationView extends VerticalLayout implements View {
     }
 
     private void createReturnHandler() {
-        btnReturn.addClickListener(clickEvent -> getUI().getNavigator().navigateTo(LoginView.NAME));
+        btnReturn.addClickListener(clickEvent -> {
+            clearTextField();
+            getUI().getNavigator().navigateTo(LoginView.NAME);
+        });
     }
 
     private void clearTextField() {

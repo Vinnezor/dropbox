@@ -23,7 +23,6 @@ import java.util.List;
 @UIScope
 public class MainView extends VerticalLayout implements View {
 
-    @Autowired
     @Qualifier("fileService")
     private FileService fileService;
 
@@ -47,7 +46,9 @@ public class MainView extends VerticalLayout implements View {
 
     private User user;
 
-    public MainView() {
+    @Autowired
+    public MainView(FileService fileService) {
+        this.fileService = fileService;
         fileList = new Grid<>();
         filterList = new ArrayList<>();
         workPanelLayout = new HorizontalLayout();

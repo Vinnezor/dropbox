@@ -12,8 +12,12 @@ import static org.springframework.data.mongodb.core.query.Query.query;
 
 @Component
 public class UserDao {
-    @Autowired
     private MongoTemplate mongoTemplate;
+
+    @Autowired
+    UserDao(MongoTemplate mongoTemplate){
+        this.mongoTemplate = mongoTemplate;
+    }
 
     public Optional<User> findByUserName(@NonNull String username) {
         return Optional.ofNullable(
