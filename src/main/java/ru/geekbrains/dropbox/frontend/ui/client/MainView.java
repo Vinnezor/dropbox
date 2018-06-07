@@ -214,6 +214,5 @@ public class MainView extends VerticalLayout implements View {
         } else {
             fileDownloader.setFileDownloadResource(resource);
         }
-
     }
 }

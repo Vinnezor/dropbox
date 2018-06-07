@@ -55,6 +55,11 @@ public class FileDaoImpl implements FileDaoService {
 
     }
 
+    @Override
+    public void setPath(String path) {
+        this.path = path;
+    }
+
     public List<File> getFileList(){
         List<File> fileNamesList = new ArrayList<>();
         File[] files;

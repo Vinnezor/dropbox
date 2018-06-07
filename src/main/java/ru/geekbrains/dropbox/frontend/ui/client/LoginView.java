@@ -2,6 +2,8 @@ package ru.geekbrains.dropbox.frontend.ui.client;
 
 import com.vaadin.navigator.View;
 
+import com.vaadin.server.FileResource;
+import com.vaadin.server.VaadinService;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.*;
 
@@ -21,10 +23,14 @@ public class LoginView extends VerticalLayout implements View {
     private AuthenticationManager manager;
 
     public static final String NAME = "login";
+    private static final String cloudImage = "/image/cloud1.png";
+    private static String basePath = VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
 
     //layout
     private HorizontalLayout loginAndPassTextFields;
     private HorizontalLayout btnsPanel;
+
+    private Alignment center = Alignment.MIDDLE_CENTER;
 
     //TextFields
     private TextField textLogin;
@@ -37,9 +43,16 @@ public class LoginView extends VerticalLayout implements View {
 
 
     public LoginView () {
+        FileResource fileResource = new FileResource(new File(basePath + cloudImage));
+        Image image = new Image("", fileResource);
+        image.setHeight("150");
+        image.setWidth("250");
         createAuthPanel();
-        addComponents(loginAndPassTextFields, btnsPanel);
-        System.out.println();
+        addComponents(image, loginAndPassTextFields, btnsPanel);
+        setComponentAlignment(loginAndPassTextFields, center);
+        setComponentAlignment(btnsPanel, center);
+        setComponentAlignment(image, center);
+
     }
 
 
