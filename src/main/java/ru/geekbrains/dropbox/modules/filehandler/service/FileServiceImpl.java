@@ -15,12 +15,17 @@ import java.util.List;
 @Service("fileService")
 public class FileServiceImpl implements FileService {
 
-    @Autowired
+
     private FileDaoService fileDao;
     @Value("${rootFilesDir}")
     private String filesPath;
     private String userName;
     private String pathToUserDir;
+
+    @Autowired
+    public FileServiceImpl(FileDaoService fileDao) {
+        this.fileDao = fileDao;
+    }
 
     @PostConstruct
     public void init() {
@@ -29,35 +34,30 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    //@PreAuthorize("hasAnyRole('USER')")
     public OutputStream getFileOutputStream(String fileName) throws IOException {
         return fileDao.getFileOutputStream(pathToUserDir + FileDaoImpl.SEPARATOR + fileName);
     }
 
 
     @Override
-    //@PreAuthorize("hasAnyRole('USER')")
     public File getFileByName(String fileName) {
         return new File(pathToUserDir + FileDaoImpl.SEPARATOR + fileName);
     }
 
 
     @Override
-    //@PreAuthorize("hasAnyRole('USER')")
     public InputStream getFileInputStream(String fileName) throws FileNotFoundException {
         return new FileInputStream(pathToUserDir + FileDaoImpl.SEPARATOR + fileName);
     }
 
 
     @Override
-    //@PreAuthorize("hasAnyRole('USER')")
     public List<File> getFileList() {
         return fileDao.getFileList();
     }
 
 
     @Override
-    //@PreAuthorize("hasAnyRole('USER')")
     public boolean deleteFile(String fileName) {
         return fileDao.deleteFile(fileName);
     }

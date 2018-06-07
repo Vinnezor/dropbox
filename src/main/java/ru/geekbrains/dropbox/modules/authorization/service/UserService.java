@@ -16,16 +16,20 @@ import javax.annotation.PostConstruct;
 
 @Service
 public class UserService implements UserDetailsService {
-    @Autowired
-    UserDao userDao;
+
+    private UserDao userDao;
 
     @Getter
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    @PostConstruct
-    public void init() {
+    @Autowired
+    UserService( UserDao userDao) {
+        this.userDao = userDao;
         bCryptPasswordEncoder = new BCryptPasswordEncoder();
+    }
 
+//    @PostConstruct
+//    public void init() {
         //add test User
 //        if(!userDao.findByUserName("user").isPresent()) {
 //            List<UserRole> userRoles = new ArrayList<>();
@@ -42,7 +46,7 @@ public class UserService implements UserDetailsService {
 //                            enabled(true).
 //                            build());
 //        }
-    }
+//    }
 
     @Override
     public UserDetails loadUserByUsername(@NonNull String username) throws UsernameNotFoundException {

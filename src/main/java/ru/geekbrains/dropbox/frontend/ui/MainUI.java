@@ -20,7 +20,6 @@ public class MainUI extends UI {
     private MainView mainView;
     private LoginView loginView;
     private RegistrationView registrationView;
-
     private Navigator navigator;
 
     @Autowired

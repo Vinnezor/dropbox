@@ -14,9 +14,8 @@ import java.util.List;
 @Component
 public class UserRegistrationImp implements UserRegistration {
 
-    @Autowired
-    private UserService userService;
 
+    private UserService userService;
     @Setter
     private String userName;
     @Setter
@@ -25,6 +24,10 @@ public class UserRegistrationImp implements UserRegistration {
     private String userEmail;
     private List<UserRole> userRoles;
 
+    @Autowired
+    public UserRegistrationImp(UserService userService) {
+        this.userService = userService;
+    }
 
     @Override
     public void createNewUser() {
