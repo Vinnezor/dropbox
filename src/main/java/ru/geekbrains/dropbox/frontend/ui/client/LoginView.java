@@ -12,6 +12,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import ru.geekbrains.dropbox.frontend.ui.MainUI;
 
 import java.io.File;
 
@@ -25,7 +26,6 @@ public class LoginView extends VerticalLayout implements View {
     public static final String NAME = "login";
     private static final String cloudImage = "/image/cloud1.png";
     private static final String failedAuthMessage = "Неверный логин или пароль";
-    private static String basePath = VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
 
     //layout
     private HorizontalLayout loginAndPassTextFields;
@@ -45,7 +45,7 @@ public class LoginView extends VerticalLayout implements View {
     @Autowired
     public LoginView (AuthenticationManager manager) {
         this.manager = manager;
-        FileResource fileResource = new FileResource(new File(basePath + cloudImage));
+        FileResource fileResource = new FileResource(new File(MainUI.basePath + cloudImage));
         Image image = new Image("", fileResource);
         image.setHeight("150");
         image.setWidth("250");

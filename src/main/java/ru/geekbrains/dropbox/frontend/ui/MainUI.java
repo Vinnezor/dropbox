@@ -4,6 +4,7 @@ import com.vaadin.navigator.Navigator;
 
 import com.vaadin.navigator.PushStateNavigation;
 import com.vaadin.server.VaadinRequest;
+import com.vaadin.server.VaadinService;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.ui.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import ru.geekbrains.dropbox.frontend.ui.client.RegistrationView;
 @PushStateNavigation
 public class MainUI extends UI {
 
+    public static String basePath = VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
 
     private MainView mainView;
     private LoginView loginView;

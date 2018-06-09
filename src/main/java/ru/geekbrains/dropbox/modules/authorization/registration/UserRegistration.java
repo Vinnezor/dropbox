@@ -1,5 +1,7 @@
 package ru.geekbrains.dropbox.modules.authorization.registration;
 
+import ru.geekbrains.dropbox.modules.authorization.service.UserService;
+
 public interface UserRegistration {
 
     void createNewUser();

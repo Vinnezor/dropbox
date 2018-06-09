@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.geekbrains.dropbox.modules.authorization.dao.User;
+import ru.geekbrains.dropbox.modules.authorization.dao.UserDao;
 import ru.geekbrains.dropbox.modules.authorization.dao.UserRole;
 import ru.geekbrains.dropbox.modules.authorization.service.UserService;
 
@@ -15,7 +16,8 @@ import java.util.List;
 public class UserRegistrationImp implements UserRegistration {
 
 
-    private UserService userService;
+    private UserDao userDao;
+
     @Setter
     private String userName;
     @Setter
@@ -25,22 +27,23 @@ public class UserRegistrationImp implements UserRegistration {
     private List<UserRole> userRoles;
 
     @Autowired
-    public UserRegistrationImp(UserService userService) {
-        this.userService = userService;
+    public UserRegistrationImp(UserDao userDao) {
+        this.userDao = userDao;
     }
 
     @Override
     public void createNewUser() {
-        userService.saveUser(userBuild());
+        userDao.save(userBuild());
 
     }
+
 
     private User userBuild () {
         userRoles = new ArrayList<>();
         userRoles.add(UserRole.USER);
         return  User.builder().
                 username(userName).
-                password(userService.getBCryptPasswordEncoder().encode(userPassword)).
+                password(userPassword).
                 email(userEmail).
                 authorities(userRoles).
                 accountNonExpired(true).
@@ -62,9 +65,10 @@ public class UserRegistrationImp implements UserRegistration {
         return !userEmail.equals("");
     }
 
+
     @Override
     public boolean validateRegistration(String userName) {
-        return userService.loadUserByUsername(userName) != null;
+        return userDao.findByUserName(userName) != null;
     }
 
 }
