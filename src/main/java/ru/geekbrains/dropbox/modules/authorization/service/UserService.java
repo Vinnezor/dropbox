@@ -13,6 +13,7 @@ import ru.geekbrains.dropbox.modules.authorization.dao.UserDao;
 import ru.geekbrains.dropbox.modules.authorization.registration.UserRegistration;
 
 import javax.annotation.PostConstruct;
+import java.util.List;
 
 
 @Service
@@ -57,28 +58,12 @@ public class UserService implements UserDetailsService {
         return userDao.findByUserName(username).orElse(null);
     }
 
-    public boolean registrationUser(String userName, String userPassword, String repeatPassword, String userEmail) {
+    public List<String> registrationUser(String userName, String userPassword, String userEmail) {
         userPassword = bCryptPasswordEncoder.encode(userPassword);
-        repeatPassword = bCryptPasswordEncoder.encode(repeatPassword);
-        System.out.println(userRegistration.validateUserName(userName) && !userRegistration.validateRegistration(userName)
-                && userRegistration.validateEmail((userEmail)));
-        System.out.println(userPassword.equals(repeatPassword)
-                && userRegistration.validatePassword(userPassword));
-        if(userRegistration.validateUserName(userName) && !userRegistration.validateRegistration(userName)
-                && userRegistration.validateEmail((userEmail))) {
-            if(userPassword.equals(repeatPassword)
-                    && userRegistration.validatePassword(userPassword)) {
-                userRegistration.setUserName(userName);
-                userRegistration.setUserPassword(userPassword);
-                userRegistration.setUserEmail(userEmail);
-                userRegistration.createNewUser();
-                return true;
-            } else {
-               return false;
-            }
-        } else {
-            return false;
-        }
+        userRegistration.setUserName(userName);
+        userRegistration.setUserPassword(userPassword);
+        userRegistration.setUserEmail(userEmail);
+        return  userRegistration.createNewUser();
     }
 
     public void saveUser(User user ) {

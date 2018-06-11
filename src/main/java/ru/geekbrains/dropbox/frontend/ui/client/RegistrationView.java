@@ -7,10 +7,12 @@ import com.vaadin.ui.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.geekbrains.dropbox.frontend.ui.MainUI;
+import ru.geekbrains.dropbox.modules.authorization.registration.RegistrationField;
 import ru.geekbrains.dropbox.modules.authorization.service.UserService;
 
-import javax.validation.constraints.Null;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 @UIScope
@@ -46,13 +48,18 @@ public class RegistrationView extends VerticalLayout implements View {
     private Button btnRegistration;
     private Button btnReturn;
 
-    private Label errorLabel;
+    private List<HorizontalLayout> textFieldsHorizontalLayouts;
+    private List<TextField> textFieldsList;
 
     @Autowired
     RegistrationView (UserService userService) {
         this.userService = userService;
+        textFieldsHorizontalLayouts = new ArrayList<>();
+        textFieldsList = new ArrayList<>();
+        Label mainLabel = new Label("Регистрация");
         createLoginForm();
         addComponents(
+                mainLabel,
                 userNameLayout,
                 passwordLayout,
                 passwordRepeatLayout,
@@ -64,21 +71,30 @@ public class RegistrationView extends VerticalLayout implements View {
     }
 
     private void createLoginForm() {
+        //создание формы все компоненты формы включая кнопки объявляются ниже
         userNameLayout = new HorizontalLayout();
         userNameField = new TextField("Имя пользователя");
         userNameLayout.addComponent(userNameField);
+        textFieldsHorizontalLayouts.add(userNameLayout);
+        textFieldsList.add(userNameField);
 
         passwordLayout = new HorizontalLayout();
         passwordField = new PasswordField("Пароль");
         passwordLayout.addComponent(passwordField);
+        textFieldsHorizontalLayouts.add(passwordLayout);
+        textFieldsList.add(passwordField);
 
         passwordRepeatLayout = new HorizontalLayout();
         passwordFieldRepeat = new PasswordField("Повторите пароль");
         passwordRepeatLayout.addComponent(passwordFieldRepeat);
+        textFieldsHorizontalLayouts.add(passwordRepeatLayout);
+        textFieldsList.add(passwordFieldRepeat);
 
         emailLayout = new HorizontalLayout();
         emailField = new TextField("Email");
         emailLayout.addComponent(emailField);
+        textFieldsHorizontalLayouts.add(emailLayout);
+        textFieldsList.add(emailField);
 
         btnsPanel = new HorizontalLayout();
         btnRegistration = new Button("Зарегистрироваться");
@@ -86,40 +102,81 @@ public class RegistrationView extends VerticalLayout implements View {
         btnReturn = new Button("Вернуться");
         createReturnHandler();
         btnsPanel.addComponents(btnRegistration, btnReturn);
-
     }
 
     private void createRegistrationHandler() {
         btnRegistration.addClickListener(clickEvent -> {
-            clearStatesImages();
-            if (checkFieldForEmpty()) {
-                if(userService.registrationUser(
-                        userNameField.getValue(),
-                        passwordField.getValue(),
-                        passwordFieldRepeat.getValue(),
-                        emailField.getValue())) {
+            if (!isTextFieldsEmpty() && isComparePasswords()) {
+                addImagesOnLayout();
+                List<String> errorList = userService.registrationUser(
+                                                    userNameField.getValue(),
+                                                    passwordField.getValue(),
+                                                    emailField.getValue()
+                );
+                if(errorList.isEmpty()) {
                     clearTextField();
                     getUI().getNavigator().navigateTo(LoginView.NAME);
                 }
+                errorList.forEach(this::addDescriptionError);
+            } else {
+                addImagesOnLayout();
             }
-
         });
     }
 
     private void createReturnHandler() {
         btnReturn.addClickListener(clickEvent -> {
             clearTextField();
+            clearStatesImages();
             getUI().getNavigator().navigateTo(LoginView.NAME);
         });
     }
 
     private void clearTextField() {
-        userNameField.clear();
-        passwordField.clear();
-        passwordFieldRepeat.clear();
-        emailField.clear();
+        textFieldsList.forEach(TextField::clear);
     }
 
+
+    private void addDescriptionError(String errorDescription) {
+
+        if(errorDescription.startsWith(RegistrationField.USER_NAME.getField())) {
+            clearStateImage(userNameLayout);
+            Notification.show(
+                    errorDescription.substring(RegistrationField.USER_NAME.getField().length(), errorDescription.length()),
+                    Notification.Type.WARNING_MESSAGE
+            ).setDelayMsec(4000);
+            userNameLayout.addComponent(addImage(error));
+        }
+        if (errorDescription.startsWith(RegistrationField.USER_EMAIL.getField())) {
+            clearStateImage(emailLayout);
+            Notification.show(
+                    errorDescription.substring(RegistrationField.USER_EMAIL.getField().length(), errorDescription.length()),
+                    Notification.Type.WARNING_MESSAGE
+            ).setDelayMsec(4000);
+            emailLayout.addComponent(addImage(error));
+        }
+    }
+
+    private boolean isComparePasswords() {
+        return passwordFieldRepeat.getValue().equals(passwordField.getValue());
+    }
+
+    private void addImagesOnLayout() {
+        clearStatesImages();
+        textFieldsList.stream().filter(TextField::isEmpty).forEach(textField -> {
+           AbstractOrderedLayout parent = (AbstractOrderedLayout) textField.getParent();
+           parent.addComponent(addImage(error));
+        });
+        textFieldsList.stream().filter(textField -> !textField.isEmpty()).forEach(textField -> {
+            AbstractOrderedLayout parent = (AbstractOrderedLayout) textField.getParent();
+            parent.addComponent(addImage(confirm));
+        });
+        if(!isComparePasswords()) {
+            clearStateImage(passwordRepeatLayout);
+            passwordRepeatLayout.addComponent(addImage(error));
+        }
+
+    }
 
     private Image addImage(String state) {
         String imagePath = null;
@@ -132,45 +189,19 @@ public class RegistrationView extends VerticalLayout implements View {
         return image;
     }
 
-    private boolean checkFieldForEmpty() {
-        boolean check = true;
-        if(userNameField.isEmpty()){
-            userNameLayout.addComponent(addImage(error));
-            check = false;
-        }
-        else userNameLayout.addComponent(addImage(confirm));
-        if(passwordField.isEmpty()) {
-            passwordLayout.addComponent(addImage(error));
-            check = false;
-        } else passwordLayout.addComponent(addImage(confirm));
-        if(passwordFieldRepeat.isEmpty() || !passwordFieldRepeat.getValue().equals(passwordField.getValue())) {
-            passwordRepeatLayout.addComponent(addImage(error));
-            check = false;
-        } else passwordRepeatLayout.addComponent(addImage(confirm));
-        if(emailField.isEmpty()){
-            emailLayout.addComponent(addImage(error));
-            check = false;
-        }
-        else emailLayout.addComponent(addImage(confirm));
-        return check;
+    private boolean isTextFieldsEmpty() {
+        return textFieldsList.stream().anyMatch(TextField::isEmpty);
     }
 
     private void clearStatesImages() {
+        //картинка всегда второй элемент
         int indexOfImage = 1;
-
-        if(userNameLayout.getComponentCount() > indexOfImage) {
-            userNameLayout.removeComponent(userNameLayout.getComponent(indexOfImage));
-        }
-        if(passwordLayout.getComponentCount() > indexOfImage) {
-            passwordLayout.removeComponent(passwordLayout.getComponent(indexOfImage));
-        }
-        if(passwordRepeatLayout.getComponentCount() > indexOfImage) {
-            passwordRepeatLayout.removeComponent(passwordRepeatLayout.getComponent(indexOfImage));
-        }
-        if(emailLayout.getComponentCount() > indexOfImage) {
-            emailLayout.removeComponent(emailLayout.getComponent(indexOfImage));
-        }
+        textFieldsHorizontalLayouts.stream().filter(layout -> layout.getComponentCount() > indexOfImage).
+                forEach(layout -> layout.removeComponent(layout.getComponent(indexOfImage)));
     }
 
-
+    private void clearStateImage(AbstractOrderedLayout layout) {
+        int indexOfImage = 1;
+        layout.removeComponent(layout.getComponent(indexOfImage));
+    }
 }

@@ -7,16 +7,24 @@ import org.springframework.stereotype.Component;
 import ru.geekbrains.dropbox.modules.authorization.dao.User;
 import ru.geekbrains.dropbox.modules.authorization.dao.UserDao;
 import ru.geekbrains.dropbox.modules.authorization.dao.UserRole;
-import ru.geekbrains.dropbox.modules.authorization.service.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.regex.Pattern;
 
 @Component
 public class UserRegistrationImp implements UserRegistration {
 
 
     private UserDao userDao;
+
+    private final String descriptionUserName = "Логин должен состоять только из латинских букв и цифр длинной от 6 до 16 символов";
+    private final String descriptionUserEmail = "Неверный формат email";
+    private final String descriptionUserExists = "Такой пользователь уже существует, введите другое имя пользователя";
+
+    private static final String patternForUserName = "^[a-zA-Z0-9_-]{6,16}$";
+    private static final String patternForEmail = "^[^@]+@[^@.]+\\.[^@]+$";
 
     @Setter
     private String userName;
@@ -29,12 +37,20 @@ public class UserRegistrationImp implements UserRegistration {
     @Autowired
     public UserRegistrationImp(UserDao userDao) {
         this.userDao = userDao;
+
     }
 
     @Override
-    public void createNewUser() {
-        userDao.save(userBuild());
-
+    public List<String> createNewUser() {
+        User newUser = userBuild();
+        List<String> errorList = new ArrayList<>();
+        if(!validate(newUser.getUsername(), patternForUserName)) errorList.add(RegistrationField.USER_NAME.getField() + descriptionUserName);
+        if(!validate(newUser.getEmail(), patternForEmail)) errorList.add(RegistrationField.USER_EMAIL.getField() + descriptionUserEmail);
+        if(errorList.isEmpty()){
+            if(!isUserExist(userName)) userDao.save(newUser);
+            else errorList.add(RegistrationField.USER_NAME.getField() + descriptionUserExists);
+        }
+        return errorList;
     }
 
 
@@ -53,22 +69,14 @@ public class UserRegistrationImp implements UserRegistration {
                 build();
     }
 
-    public boolean validateUserName(String userName) {
-        return !userName.equals("");
+    private boolean validate (String userName, String regex) {
+        return Pattern.compile(regex).matcher(userName).matches();
     }
 
-    public boolean validatePassword(String userPassword) {
-        return !userPassword.equals("");
-    }
-
-    public boolean validateEmail(String userEmail) {
-        return !userEmail.equals("");
+    private boolean isUserExist(String userName) {
+        return userDao.findByUserName(userName).isPresent();
     }
 
 
-    @Override
-    public boolean validateRegistration(String userName) {
-        return userDao.findByUserName(userName) != null;
-    }
 
 }
