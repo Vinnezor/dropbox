@@ -56,6 +56,10 @@ public class FileServiceImpl implements FileService {
         return fileDao.getFileList();
     }
 
+    @Override
+    public List<File> getDirList() {
+        return fileDao.getDirList();
+    }
 
     @Override
     public boolean deleteFile(String fileName) {
@@ -68,5 +72,9 @@ public class FileServiceImpl implements FileService {
          pathToUserDir  = filesPath + FileDaoImpl.SEPARATOR + userName;
          if (!fileDao.dirExists(pathToUserDir)) fileDao.createDir(pathToUserDir);
          fileDao.setPath(pathToUserDir);
+    }
+
+    public void addDir(String dirname) {
+        fileDao.createDir(pathToUserDir + FileDaoImpl.SEPARATOR  + dirname);
     }
 }

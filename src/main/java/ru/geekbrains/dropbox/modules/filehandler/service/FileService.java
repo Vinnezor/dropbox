@@ -11,7 +11,9 @@ public interface FileService {
     OutputStream getFileOutputStream (String fileName) throws IOException;
     InputStream getFileInputStream( String fileName) throws FileNotFoundException;
     List<File> getFileList ();
+    List<File> getDirList();
     File getFileByName(String fileName);
     boolean deleteFile(String fileName);
     void setUser(User user);
+    void addDir(String dirname);
 }

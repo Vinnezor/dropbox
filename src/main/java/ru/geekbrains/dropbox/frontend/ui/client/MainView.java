@@ -45,6 +45,7 @@ public class MainView extends GridLayout implements View {
     private Button btnAddNewSearchFilter;
     private Button btnFind;
     private Button btnNewFolder;
+    private Button btnConfirmFolderOrFileName;
 
     private File focusFile;
     private FileDownloader fileDownloader;
@@ -88,18 +89,26 @@ public class MainView extends GridLayout implements View {
 
 
     private void fillFileList() {
-        fileList.setItems(fileService.getFileList());
+        List<File> filesAndDirs = new ArrayList<>();
+        filesAndDirs.addAll(fileService.getDirList());
+        filesAndDirs.addAll(fileService.getFileList());
+        fileList.setItems(filesAndDirs);
     }
 
     private void createFileWidget(int columns) {
         btnNewFolder = new Button("Add folder");
         fileList = new Grid<>();
+        HorizontalLayout nameOfFolderPanel = new HorizontalLayout();
         folderOrFileName = new TextField();
         folderOrFileName.setPlaceholder("Введите название");
-        folderOrFileName.setVisible(false);
+        btnConfirmFolderOrFileName = new Button("Подтвердить");
+        btnConfirmFolderOrFileName.setStyleName("tiny");
+        nameOfFolderPanel.addComponents(folderOrFileName, btnConfirmFolderOrFileName);
+        nameOfFolderPanel.setVisible(false);
         createFileList();
+        createAddNewFolderHandler();
         addComponent(btnNewFolder, columns, 0);
-        addComponent(folderOrFileName, columns, 1);
+        addComponent(nameOfFolderPanel, columns, 1);
         addComponent(fileList, columns, 2, columns, rows - 1);
     }
 
@@ -157,6 +166,24 @@ public class MainView extends GridLayout implements View {
             } else {
                 createResource(focusFile.getName());
             }
+        });
+    }
+
+    private void createAddNewFolderHandler() {
+        btnNewFolder.addClickListener(clickEvent -> {
+            folderOrFileName.getParent().setVisible(true);
+            folderOrFileName.clear();
+            folderOrFileName.setValue("New Folder");
+            createConfirmFolderOrFileNameHandler();
+        });
+    }
+
+    private void createConfirmFolderOrFileNameHandler() {
+        btnConfirmFolderOrFileName.addClickListener(clickEvent -> {
+            fileService.addDir(folderOrFileName.getValue());
+            fillFileList();
+            folderOrFileName.clear();
+            folderOrFileName.getParent().setVisible(false);
         });
     }
 
