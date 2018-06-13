@@ -21,15 +21,20 @@ import java.util.List;
 
 @Component
 @UIScope
-public class MainView extends VerticalLayout implements View {
+public class MainView extends GridLayout implements View {
 
     @Qualifier("fileService")
     private FileService fileService;
 
+
+    private static final int rows = 5;
+    private static final int columns = 3;
+
+
     public static final String NAME = "";
-    private HorizontalLayout workPanelLayout;
     private HorizontalLayout searchWorkArea;
     private VerticalLayout searchPanelLayout;
+    private TextField folderOrFileName;
 
     private Grid<File> fileList;
     private List<TextField> filterList;
@@ -39,6 +44,7 @@ public class MainView extends VerticalLayout implements View {
     private Button btnLogout;
     private Button btnAddNewSearchFilter;
     private Button btnFind;
+    private Button btnNewFolder;
 
     private File focusFile;
     private FileDownloader fileDownloader;
@@ -48,16 +54,15 @@ public class MainView extends VerticalLayout implements View {
 
     @Autowired
     public MainView(FileService fileService) {
+        super(columns, rows);
         this.fileService = fileService;
-        fileList = new Grid<>();
         filterList = new ArrayList<>();
-        workPanelLayout = new HorizontalLayout();
-        searchPanelLayout = new VerticalLayout();
-        createWorkPanel();
-        createFileList();
+        createBtnColumns(0);
+        createFileWidget(1);
+        createSearchPanel(2);
         createBtnLogoutHandler();
-        createSearchPanel();
-        addComponents(fileList, workPanelLayout, searchPanelLayout);
+        //addComponents(workPanelLayout, filePanelLayout, searchPanelLayout);
+        setMargin(true);
     }
 
     @Override
@@ -86,20 +91,34 @@ public class MainView extends VerticalLayout implements View {
         fileList.setItems(fileService.getFileList());
     }
 
-
-
-    private void createWorkPanel () {
-        btnUpload = new Upload();
-        btnUpload.setButtonCaption("Добавить");
-        btnDownload = new Button("Скачать");
-        btnDelete = new Button("Удалить");
-        btnLogout = new Button("Выйти");
-        workPanelLayout.addComponents(btnUpload, btnDownload, btnDelete, btnLogout);
+    private void createFileWidget(int columns) {
+        btnNewFolder = new Button("Add folder");
+        fileList = new Grid<>();
+        folderOrFileName = new TextField();
+        folderOrFileName.setPlaceholder("Введите название");
+        folderOrFileName.setVisible(false);
+        createFileList();
+        addComponent(btnNewFolder, columns, 0);
+        addComponent(folderOrFileName, columns, 1);
+        addComponent(fileList, columns, 2, columns, rows - 1);
     }
 
-    private void createSearchPanel(){
+    private void createBtnColumns(int columns) {
+        VerticalLayout btnColumnsLayout = new VerticalLayout();
+        btnUpload = new Upload();
+        btnUpload.setButtonCaption("Upload");
+        btnDownload = new Button("Download");
+        btnDelete = new Button("Delete");
+        btnLogout = new Button("Logout");
+        btnColumnsLayout.addComponents(btnUpload, btnDownload, btnDelete, btnLogout);
+        addComponent(btnColumnsLayout, columns, 1, columns, rows - 1 );
+
+    }
+
+    private void createSearchPanel(int columns){
         Label nameOfFilterBlock = new Label("Поиск по файлам");
         searchWorkArea = new HorizontalLayout();
+        searchPanelLayout = new VerticalLayout();
         TextField searchFilterField = new TextField();
         filterList.add(searchFilterField);
         btnAddNewSearchFilter = new Button("+");
@@ -108,7 +127,8 @@ public class MainView extends VerticalLayout implements View {
         btnFind = new Button("Искать");
         createBtnFindHandler();
         searchWorkArea.addComponents(searchFilterField, btnAddNewSearchFilter);
-        searchPanelLayout.addComponents(nameOfFilterBlock ,searchWorkArea, btnFind);
+        searchPanelLayout.addComponents(searchWorkArea, nameOfFilterBlock , searchWorkArea, btnFind);
+        addComponent(searchPanelLayout, columns, 1, columns, rows - 1);
     }
 
     private void createUploadReciever () {
