@@ -1,5 +1,6 @@
 package ru.geekbrains.dropbox.frontend.ui.client;
 
+import com.vaadin.annotations.Theme;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.FileDownloader;
@@ -56,6 +57,7 @@ public class MainView extends GridLayout implements View {
     @Autowired
     public MainView(FileService fileService) {
         super(columns, rows);
+
         this.fileService = fileService;
         filterList = new ArrayList<>();
         createBtnColumns(0);
@@ -64,6 +66,7 @@ public class MainView extends GridLayout implements View {
         createBtnLogoutHandler();
         //addComponents(workPanelLayout, filePanelLayout, searchPanelLayout);
         setMargin(true);
+        setSpacing(true);
     }
 
     @Override
@@ -96,7 +99,7 @@ public class MainView extends GridLayout implements View {
     }
 
     private void createFileWidget(int columns) {
-        btnNewFolder = new Button("Add folder");
+        btnNewFolder = new Button("Новая Папка");
         fileList = new Grid<>();
         HorizontalLayout nameOfFolderPanel = new HorizontalLayout();
         folderOrFileName = new TextField();

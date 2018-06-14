@@ -1,5 +1,6 @@
 package ru.geekbrains.dropbox.frontend.ui;
 
+import com.vaadin.annotations.Theme;
 import com.vaadin.navigator.Navigator;
 
 import com.vaadin.navigator.PushStateNavigation;
@@ -15,6 +16,7 @@ import ru.geekbrains.dropbox.frontend.ui.client.RegistrationView;
 
 @SpringUI
 @PushStateNavigation
+@Theme("dark")
 public class MainUI extends UI {
 
     public static String basePath = VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
@@ -33,7 +35,6 @@ public class MainUI extends UI {
 
     @Override
     protected void init(VaadinRequest request) {
-
         navigator = new Navigator(this, this);
         navigator.addView(MainView.NAME, mainView);
         navigator.addView(LoginView.NAME, loginView);
