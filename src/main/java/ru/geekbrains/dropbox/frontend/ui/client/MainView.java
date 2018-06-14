@@ -101,6 +101,7 @@ public class MainView extends GridLayout implements View {
     private void createFileWidget(int columns) {
         btnNewFolder = new Button("Новая Папка");
         fileList = new Grid<>();
+
         HorizontalLayout nameOfFolderPanel = new HorizontalLayout();
         folderOrFileName = new TextField();
         folderOrFileName.setPlaceholder("Введите название");
@@ -113,6 +114,8 @@ public class MainView extends GridLayout implements View {
         addComponent(btnNewFolder, columns, 0);
         addComponent(nameOfFolderPanel, columns, 1);
         addComponent(fileList, columns, 2, columns, rows - 1);
+//        GridRowDragger<File> fileGridRowDragger = new GridRowDragger<>(fileList);
+//        fileGridRowDragger.getGridDragSource().
     }
 
     private void createBtnColumns(int columns) {

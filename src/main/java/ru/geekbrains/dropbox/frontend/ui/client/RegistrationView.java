@@ -1,5 +1,6 @@
 package ru.geekbrains.dropbox.frontend.ui.client;
 
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.server.FileResource;
 import com.vaadin.spring.annotation.UIScope;
@@ -7,6 +8,7 @@ import com.vaadin.ui.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.geekbrains.dropbox.frontend.ui.MainUI;
+import ru.geekbrains.dropbox.frontend.ui.icons.IconsContainer;
 import ru.geekbrains.dropbox.modules.authorization.registration.RegistrationField;
 import ru.geekbrains.dropbox.modules.authorization.service.UserService;
 
@@ -21,10 +23,7 @@ public class RegistrationView extends VerticalLayout implements View {
 
 
     public static final String NAME = "registration";
-    private final String greenTick = "/image/tick.gif";
-    private final String redCross = "/image/redcross.png";
-    private final String wightImage = "20";
-    private final String heightImage = "20";
+
 
     private final String error = "error";
     private final String confirm = "confirm";
@@ -145,7 +144,7 @@ public class RegistrationView extends VerticalLayout implements View {
                     errorDescription.substring(RegistrationField.USER_NAME.getField().length(), errorDescription.length()),
                     Notification.Type.WARNING_MESSAGE
             ).setDelayMsec(4000);
-            userNameLayout.addComponent(addImage(error));
+            userNameLayout.addComponent(IconsContainer.ERROR.getImage());
         }
         if (errorDescription.startsWith(RegistrationField.USER_EMAIL.getField())) {
             clearStateImage(emailLayout);
@@ -153,7 +152,7 @@ public class RegistrationView extends VerticalLayout implements View {
                     errorDescription.substring(RegistrationField.USER_EMAIL.getField().length(), errorDescription.length()),
                     Notification.Type.WARNING_MESSAGE
             ).setDelayMsec(4000);
-            emailLayout.addComponent(addImage(error));
+            emailLayout.addComponent(IconsContainer.ERROR.getImage());
         }
     }
 
@@ -165,29 +164,19 @@ public class RegistrationView extends VerticalLayout implements View {
         clearStatesImages();
         textFieldsList.stream().filter(TextField::isEmpty).forEach(textField -> {
            AbstractOrderedLayout parent = (AbstractOrderedLayout) textField.getParent();
-           parent.addComponent(addImage(error));
+           parent.addComponent(IconsContainer.ERROR.getImage());
         });
         textFieldsList.stream().filter(textField -> !textField.isEmpty()).forEach(textField -> {
             AbstractOrderedLayout parent = (AbstractOrderedLayout) textField.getParent();
-            parent.addComponent(addImage(confirm));
+            parent.addComponent(IconsContainer.CONFIRM.getImage());
         });
         if(!isComparePasswords()) {
             clearStateImage(passwordRepeatLayout);
-            passwordRepeatLayout.addComponent(addImage(error));
+            passwordRepeatLayout.addComponent(IconsContainer.ERROR.getImage());
         }
 
     }
 
-    private Image addImage(String state) {
-        String imagePath = null;
-        if(state.equals(confirm)) imagePath = greenTick;
-        else if (state.equals(error)) imagePath = redCross;
-        FileResource fileResource = new FileResource(new File(MainUI.basePath + imagePath));
-        Image image = new Image("", fileResource);
-        image.setWidth(wightImage);
-        image.setHeight(heightImage);
-        return image;
-    }
 
     private boolean isTextFieldsEmpty() {
         return textFieldsList.stream().anyMatch(TextField::isEmpty);
