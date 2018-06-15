@@ -4,16 +4,16 @@ import com.vaadin.server.FileResource;
 import com.vaadin.server.Resource;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Image;
-import lombok.Getter;
 import ru.geekbrains.dropbox.frontend.ui.MainUI;
+import ru.geekbrains.dropbox.modules.filehandler.service.FileServiceImpl;
 
 import java.io.File;
 
 public enum IconsContainer {
 
 
-    CONFIRM("/image/tick.gif"),
-    ERROR("/image/redcross.png"),
+    CONFIRM("image/tick.gif"),
+    ERROR("image/redcross.png"),
     FILE("image/file_icon1.png"),
     FOLDER("image/folder_icon1.png");
 
@@ -40,7 +40,7 @@ public enum IconsContainer {
 
 
     private Resource createResource() {
-        return new FileResource(new File(MainUI.basePath + path));
+        return new FileResource(new File(MainUI.basePath + path + FileServiceImpl.SEPARATOR));
     }
 
     public Resource getThemeResource() {

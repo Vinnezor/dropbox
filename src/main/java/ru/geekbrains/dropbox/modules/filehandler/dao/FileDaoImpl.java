@@ -1,6 +1,7 @@
 package ru.geekbrains.dropbox.modules.filehandler.dao;
 import lombok.Setter;
 import org.springframework.stereotype.Repository;
+import ru.geekbrains.dropbox.modules.filehandler.service.FileServiceImpl;
 
 import java.io.*;
 
@@ -11,8 +12,8 @@ import java.util.List;
 @Repository
 public class FileDaoImpl implements FileDaoService {
 
-    public static final String SEPARATOR = File.separator;
-    private static final int byteInOneKB = 1024;
+
+    private final int byteInOneKB = 1024;
 
     @Setter
     private String path;
@@ -44,7 +45,7 @@ public class FileDaoImpl implements FileDaoService {
 
     @Override
     public boolean deleteFile(String fileName) {
-        File file = new File(path + SEPARATOR + fileName);
+        File file = new File(path + FileServiceImpl.SEPARATOR + fileName);
         if(file.exists()) return file.delete();
         throw new RuntimeException("Несуществующий файл запрошен на удаление");
     }
@@ -69,6 +70,9 @@ public class FileDaoImpl implements FileDaoService {
         return fileNamesList;
     }
 
+
+    //рекурсивно определяем размер папок и файлов,
+    // складываем и преобразуем в килобайты
     public long getFileSize(File file) {
         int  size = 0;
         if(file.isDirectory()) {

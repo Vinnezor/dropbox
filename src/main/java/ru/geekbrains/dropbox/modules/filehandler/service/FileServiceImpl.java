@@ -15,6 +15,8 @@ import java.util.List;
 @Service("fileService")
 public class FileServiceImpl implements FileService {
 
+    public static final String SEPARATOR = File.separator;
+    private String currentPath;
 
     private FileDaoService fileDao;
     @Value("${rootFilesDir}")
@@ -29,25 +31,25 @@ public class FileServiceImpl implements FileService {
 
     @PostConstruct
     public void init() {
-        filesPath = FileDaoImpl.SEPARATOR + filesPath;
+        filesPath = SEPARATOR + filesPath;
         if (!fileDao.dirExists(filesPath)) fileDao.createDir(filesPath);
     }
 
     @Override
     public OutputStream getFileOutputStream(String fileName) throws IOException {
-        return fileDao.getFileOutputStream(pathToUserDir + FileDaoImpl.SEPARATOR + fileName);
+        return fileDao.getFileOutputStream(currentPath + SEPARATOR + fileName);
     }
 
 
     @Override
     public File getFileByName(String fileName) {
-        return new File(pathToUserDir + FileDaoImpl.SEPARATOR + fileName);
+        return new File(currentPath + SEPARATOR + fileName);
     }
 
 
     @Override
     public InputStream getFileInputStream(String fileName) throws FileNotFoundException {
-        return new FileInputStream(pathToUserDir + FileDaoImpl.SEPARATOR + fileName);
+        return new FileInputStream(currentPath + SEPARATOR + fileName);
     }
 
 
@@ -65,17 +67,19 @@ public class FileServiceImpl implements FileService {
     @Override
     public void setUser(User user) {
          userName = user.getUsername();
-         pathToUserDir  = filesPath + FileDaoImpl.SEPARATOR + userName;
-         if (!fileDao.dirExists(pathToUserDir)) fileDao.createDir(pathToUserDir);
-         fileDao.setPath(pathToUserDir);
+         currentPath  = filesPath + SEPARATOR + userName;
+         pathToUserDir = currentPath;
+         if (!fileDao.dirExists(currentPath)) fileDao.createDir(currentPath);
+         fileDao.setPath(currentPath);
     }
 
     public void addDir(String dirname) {
-        fileDao.createDir(pathToUserDir + FileDaoImpl.SEPARATOR  + dirname);
+        fileDao.createDir(currentPath + SEPARATOR  + dirname);
     }
 
     public void getDir(String dirname) {
-        fileDao.setPath(pathToUserDir + FileDaoImpl.SEPARATOR  + dirname);
+        currentPath = currentPath + SEPARATOR  + dirname;
+        fileDao.setPath(currentPath);
     }
 
     public long getFilesSize(File file) {
