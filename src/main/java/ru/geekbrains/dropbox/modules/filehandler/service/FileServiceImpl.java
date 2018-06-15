@@ -56,10 +56,6 @@ public class FileServiceImpl implements FileService {
         return fileDao.getFileList();
     }
 
-    @Override
-    public List<File> getDirList() {
-        return fileDao.getDirList();
-    }
 
     @Override
     public boolean deleteFile(String fileName) {

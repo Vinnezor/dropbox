@@ -4,7 +4,7 @@ import org.springframework.stereotype.Repository;
 
 import java.io.*;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 
@@ -15,11 +15,9 @@ public class FileDaoImpl implements FileDaoService {
 
     @Setter
     private String path;
-    private List<File> dirList =  new ArrayList<>();
 
     @Override
     public boolean createDir(String path) {
-        File dir = new File(path);
         if (!dirExists(path)) {
             return new File(path).mkdirs();
         }
@@ -50,10 +48,6 @@ public class FileDaoImpl implements FileDaoService {
         throw new RuntimeException("Несуществующий файл запрошен на удаление");
     }
 
-    @Override
-    public void clearFileList() {
-
-    }
 
     @Override
     public void setPath(String path) {
@@ -61,28 +55,17 @@ public class FileDaoImpl implements FileDaoService {
     }
 
     public List<File> getFileList(){
-        List<File> fileNamesList = new ArrayList<>();
+        List<File> fileNamesList = new LinkedList<>();
         File[] files;
         File dir = new File(path);
         files = dir.listFiles();
         if(files != null) {
             for (int i = 0; i < files.length; i++) {
                 if(files[i].isFile()) fileNamesList.add(files[i]);
+                else if (files[i].isDirectory()) fileNamesList.add(files[i]);
             }
         }
         return fileNamesList;
     }
 
-    public List<File> getDirList() {
-        List<File> dirNames = new ArrayList<>();
-        File[] files;
-        File dir = new File(path);
-        files = dir.listFiles();
-        if(files != null) {
-            for (int i = 0; i < files.length; i++) {
-                if(files[i].isDirectory()) dirNames.add(files[i]);
-            }
-        }
-        return dirNames;
-    }
 }

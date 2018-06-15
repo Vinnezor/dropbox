@@ -16,16 +16,23 @@ public enum IconsContainer {
     FOLDER("/image/folder_icon.png");
 
     private String path;
+    private String width = "20";
+    private String height = "20";
 
     IconsContainer(String path) {
        this.path = path;
     }
 
+    IconsContainer(String path, String width, String height) {
+        this(path);
+        this.width = width;
+        this.height = height;
+    }
 
     public Image getImage() {
         Image image = new Image("", createResource());
-        image.setWidth("20");
-        image.setHeight("20");
+        image.setWidth(width);
+        image.setHeight(height);
         return image;
     }
 

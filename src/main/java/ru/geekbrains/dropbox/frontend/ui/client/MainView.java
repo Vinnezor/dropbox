@@ -92,10 +92,7 @@ public class MainView extends GridLayout implements View {
 
 
     private void fillFileList() {
-        List<File> filesAndDirs = new ArrayList<>();
-        filesAndDirs.addAll(fileService.getDirList());
-        filesAndDirs.addAll(fileService.getFileList());
-        fileList.setItems(filesAndDirs);
+        fileList.setItems(fileService.getFileList());
     }
 
     private void createFileWidget(int columns) {
