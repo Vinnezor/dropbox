@@ -2,7 +2,9 @@ package ru.geekbrains.dropbox.frontend.ui.icons;
 
 import com.vaadin.server.FileResource;
 import com.vaadin.server.Resource;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Image;
+import lombok.Getter;
 import ru.geekbrains.dropbox.frontend.ui.MainUI;
 
 import java.io.File;
@@ -12,15 +14,15 @@ public enum IconsContainer {
 
     CONFIRM("/image/tick.gif"),
     ERROR("/image/redcross.png"),
-    FILE("/image/file_icon.png"),
-    FOLDER("/image/folder_icon.png");
+    FILE("image/file_icon1.png"),
+    FOLDER("image/folder_icon1.png");
 
     private String path;
     private String width = "20";
     private String height = "20";
 
     IconsContainer(String path) {
-       this.path = path;
+       this.path = path ;
     }
 
     IconsContainer(String path, String width, String height) {
@@ -39,5 +41,9 @@ public enum IconsContainer {
 
     private Resource createResource() {
         return new FileResource(new File(MainUI.basePath + path));
+    }
+
+    public Resource getThemeResource() {
+        return new ThemeResource(path);
     }
 }

@@ -3,16 +3,17 @@ package ru.geekbrains.dropbox.frontend.ui.client;
 import com.vaadin.annotations.Theme;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.server.FileDownloader;
-import com.vaadin.server.StreamResource;
+import com.vaadin.server.*;
 
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.*;
 
+import com.vaadin.ui.renderers.ImageRenderer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import ru.geekbrains.dropbox.frontend.ui.icons.IconsContainer;
 import ru.geekbrains.dropbox.modules.authorization.dao.User;
 import ru.geekbrains.dropbox.modules.filehandler.service.FileService;
 
@@ -85,9 +86,15 @@ public class MainView extends GridLayout implements View {
     }
 
     private void createFileList () {
+        fileList.addColumn(this::getPicture, new ImageRenderer<>());
         fileList.addColumn(File::getName).setCaption("Имя файла");
         fileList.addColumn((file) -> (file.length() / 1024)).setCaption("размер в кбайтах");
         fileList.addItemClickListener(itemClick -> focusFile = itemClick.getItem());
+    }
+
+    private Resource getPicture(File file) {
+        if(file.isFile()) return IconsContainer.FILE.getThemeResource();
+        else return IconsContainer.FOLDER.getThemeResource();
     }
 
 
@@ -111,8 +118,6 @@ public class MainView extends GridLayout implements View {
         addComponent(btnNewFolder, columns, 0);
         addComponent(nameOfFolderPanel, columns, 1);
         addComponent(fileList, columns, 2, columns, rows - 1);
-//        GridRowDragger<File> fileGridRowDragger = new GridRowDragger<>(fileList);
-//        fileGridRowDragger.getGridDragSource().
     }
 
     private void createBtnColumns(int columns) {
