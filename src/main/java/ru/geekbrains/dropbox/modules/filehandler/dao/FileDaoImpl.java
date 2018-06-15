@@ -57,14 +57,14 @@ public class FileDaoImpl implements FileDaoService {
     }
 
     public List<File> getFileList(){
-        List<File> fileNamesList = new LinkedList<>();
+        LinkedList<File> fileNamesList = new LinkedList<>();
         File[] files;
         File dir = new File(path);
         files = dir.listFiles();
         if(files != null) {
             for (int i = 0; i < files.length; i++) {
                 if(files[i].isFile()) fileNamesList.add(files[i]);
-                else if (files[i].isDirectory()) fileNamesList.add(files[i]);
+                else if (files[i].isDirectory()) fileNamesList.addFirst(files[i]);
             }
         }
         return fileNamesList;
