@@ -15,4 +15,5 @@ public interface FileService {
     boolean deleteFile(String fileName);
     void setUser(User user);
     void addDir(String dirname);
+    void getDir(String dirname);
 }

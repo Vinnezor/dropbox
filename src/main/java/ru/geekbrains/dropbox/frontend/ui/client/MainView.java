@@ -89,7 +89,19 @@ public class MainView extends GridLayout implements View {
         fileList.addColumn(this::getPicture, new ImageRenderer<>());
         fileList.addColumn(File::getName).setCaption("Имя файла");
         fileList.addColumn((file) -> (file.length() / 1024)).setCaption("размер в кбайтах");
-        fileList.addItemClickListener(itemClick -> focusFile = itemClick.getItem());
+        fileList.addItemClickListener(this::gridItemClickListenerHandler);
+
+    }
+
+    private void gridItemClickListenerHandler(Grid.ItemClick<File> itemClick) {
+        int click = 1;
+        int dbclick = 2;
+        File file = itemClick.getItem();
+        focusFile = file;
+        if(itemClick.getMouseEventDetails().getType() == dbclick && file.isDirectory()){
+            fileService.getDir(file.getName());
+            fillFileList();
+        }
     }
 
     private Resource getPicture(File file) {

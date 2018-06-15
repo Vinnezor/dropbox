@@ -73,4 +73,8 @@ public class FileServiceImpl implements FileService {
     public void addDir(String dirname) {
         fileDao.createDir(pathToUserDir + FileDaoImpl.SEPARATOR  + dirname);
     }
+
+    public void getDir(String dirname) {
+        fileDao.setPath(pathToUserDir + FileDaoImpl.SEPARATOR  + dirname);
+    }
 }
