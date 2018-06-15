@@ -16,4 +16,5 @@ public interface FileService {
     void setUser(User user);
     void addDir(String dirname);
     void getDir(String dirname);
+    long getFilesSize(File file);
 }

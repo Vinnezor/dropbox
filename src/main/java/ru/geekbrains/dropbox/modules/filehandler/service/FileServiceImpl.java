@@ -77,4 +77,8 @@ public class FileServiceImpl implements FileService {
     public void getDir(String dirname) {
         fileDao.setPath(pathToUserDir + FileDaoImpl.SEPARATOR  + dirname);
     }
+
+    public long getFilesSize(File file) {
+        return fileDao.getFileSize(file);
+    }
 }

@@ -68,4 +68,20 @@ public class FileDaoImpl implements FileDaoService {
         return fileNamesList;
     }
 
+    public long getFileSize(File file) {
+        int  size = 0;
+        if(file.isDirectory()) {
+            File[] files = file.listFiles();
+            if(files != null) {
+                for (int i = 0; i < files.length; i++) {
+                    size += getFileSize(files[i]);
+                }
+                return size;
+            } else {
+                return 0;
+            }
+        }
+        return file.length() / 1024;
+    }
+
 }

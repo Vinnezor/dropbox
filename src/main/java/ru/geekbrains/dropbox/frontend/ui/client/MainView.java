@@ -88,7 +88,7 @@ public class MainView extends GridLayout implements View {
     private void createFileList () {
         fileList.addColumn(this::getPicture, new ImageRenderer<>());
         fileList.addColumn(File::getName).setCaption("Имя файла");
-        fileList.addColumn((file) -> (file.length() / 1024)).setCaption("размер в кбайтах");
+        fileList.addColumn((file) -> fileService.getFilesSize(file)).setCaption("размер в кбайтах");
         fileList.addItemClickListener(this::gridItemClickListenerHandler);
 
     }

@@ -12,4 +12,5 @@ public interface FileDaoService {
     InputStream getFileInputStream(String filePath) throws FileNotFoundException;
     boolean deleteFile(String fileName);
     void setPath(String path);
+    long getFileSize(File file);
 }
