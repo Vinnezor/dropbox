@@ -12,6 +12,7 @@ import java.util.List;
 public class FileDaoImpl implements FileDaoService {
 
     public static final String SEPARATOR = File.separator;
+    private static final int byteInOneKB = 1024;
 
     @Setter
     private String path;
@@ -81,7 +82,7 @@ public class FileDaoImpl implements FileDaoService {
                 return 0;
             }
         }
-        return file.length() / 1024;
+        return file.length() / byteInOneKB;
     }
 
 }
