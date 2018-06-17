@@ -40,19 +40,19 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public OutputStream getFileOutputStream(String fileName) throws IOException {
-        return fileDao.getFileOutputStream(currentPath + SEPARATOR + fileName);
+        return fileDao.getFileOutputStream(createPath(fileName));
     }
 
 
     @Override
     public File getFileByName(String fileName) {
-        return new File(currentPath + SEPARATOR + fileName);
+        return new File(createPath(fileName));
     }
 
 
     @Override
     public InputStream getFileInputStream(String fileName) throws FileNotFoundException {
-        return new FileInputStream(currentPath + SEPARATOR + fileName);
+        return new FileInputStream(createPath(fileName));
     }
 
 
@@ -78,12 +78,12 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public void addDir(String dirname) {
-        fileDao.createDir(currentPath + SEPARATOR  + dirname);
+        fileDao.createDir(createPath(dirname));
     }
 
     @Override
     public void getDir(String dirname) {
-        currentPath = currentPath + SEPARATOR  + dirname;
+        currentPath = createPath(dirname);
         fileDao.setPath(currentPath);
     }
 
@@ -104,6 +104,10 @@ public class FileServiceImpl implements FileService {
             }
             fileDao.setPath(currentPath);
         }
+    }
+
+    private String createPath(String filename) {
+        return currentPath + SEPARATOR + filename;
     }
 
     private boolean isRoot(String path) {
