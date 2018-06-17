@@ -1,5 +1,6 @@
 package ru.geekbrains.dropbox.modules.filehandler.service;
 
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -9,15 +10,17 @@ import ru.geekbrains.dropbox.modules.filehandler.dao.FileDaoService;
 
 import javax.annotation.PostConstruct;
 import java.io.*;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 
 @Service("fileService")
 public class FileServiceImpl implements FileService {
 
-    public static final String SEPARATOR = File.separator;
+    public static final char SEPARATOR = File.separatorChar;
+    @Getter
     private String currentPath;
-
     private FileDaoService fileDao;
     @Value("${rootFilesDir}")
     private String filesPath;
@@ -73,16 +76,37 @@ public class FileServiceImpl implements FileService {
          fileDao.setPath(currentPath);
     }
 
+    @Override
     public void addDir(String dirname) {
         fileDao.createDir(currentPath + SEPARATOR  + dirname);
     }
 
+    @Override
     public void getDir(String dirname) {
         currentPath = currentPath + SEPARATOR  + dirname;
         fileDao.setPath(currentPath);
     }
 
+    @Override
     public long getFilesSize(File file) {
         return fileDao.getFileSize(file);
+    }
+
+    @Override
+    public void upDir() {
+        if(!isRoot(currentPath)) {
+            char[] chars = currentPath.toCharArray();
+            for (int i = chars.length - 1; i > 0; i--) {
+                if(chars[i] == SEPARATOR) {
+                    currentPath = currentPath.substring(0, i);
+                    break;
+                }
+            }
+            fileDao.setPath(currentPath);
+        }
+    }
+
+    private boolean isRoot(String path) {
+        return pathToUserDir.equals(path);
     }
 }

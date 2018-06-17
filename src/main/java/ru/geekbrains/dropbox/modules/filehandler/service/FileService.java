@@ -13,8 +13,10 @@ public interface FileService {
     List<File> getFileList ();
     File getFileByName(String fileName);
     boolean deleteFile(String fileName);
+    String getCurrentPath();
     void setUser(User user);
     void addDir(String dirname);
     void getDir(String dirname);
     long getFilesSize(File file);
+    void upDir();
 }

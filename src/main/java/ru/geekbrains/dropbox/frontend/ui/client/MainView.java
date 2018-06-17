@@ -8,6 +8,7 @@ import com.vaadin.server.*;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.*;
 
+import com.vaadin.ui.components.grid.HeaderCell;
 import com.vaadin.ui.renderers.ImageRenderer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -19,27 +20,27 @@ import ru.geekbrains.dropbox.modules.filehandler.service.FileService;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @UIScope
-public class MainView extends GridLayout implements View {
+public class MainView extends HorizontalLayout implements View {
 
     @Qualifier("fileService")
     private FileService fileService;
 
-
-    private static final int rows = 5;
-    private static final int columns = 3;
-
-
     public static final String NAME = "";
     private HorizontalLayout searchWorkArea;
     private VerticalLayout searchPanelLayout;
+    private VerticalLayout filePanelLayout;
+    private VerticalLayout buttonPanelLayout;
     private TextField folderOrFileName;
 
     private Grid<File> fileList;
     private List<TextField> filterList;
+
     private Upload btnUpload;
     private Button btnDownload;
     private Button btnDelete;
@@ -48,24 +49,24 @@ public class MainView extends GridLayout implements View {
     private Button btnFind;
     private Button btnNewFolder;
     private Button btnConfirmFolderOrFileName;
+    private Button btnUpDir;
 
     private File focusFile;
     private FileDownloader fileDownloader;
 
+    private HeaderCell pathToDir;
 
     private User user;
 
+
     @Autowired
     public MainView(FileService fileService) {
-        super(columns, rows);
 
         this.fileService = fileService;
         filterList = new ArrayList<>();
-        createBtnColumns(0);
-        createFileWidget(1);
-        createSearchPanel(2);
-        createBtnLogoutHandler();
-        //addComponents(workPanelLayout, filePanelLayout, searchPanelLayout);
+        createBtnColumns();
+        createFileWidget();
+        createSearchPanel();
         setMargin(true);
         setSpacing(true);
     }
@@ -76,6 +77,7 @@ public class MainView extends GridLayout implements View {
         createUploadReciever();
         createBtnDownloadHandler();
         createBtnDeleteHandler();
+        createBtnLogoutHandler();
         fillFileList();
     }
 
@@ -90,7 +92,8 @@ public class MainView extends GridLayout implements View {
         fileList.addColumn(File::getName).setCaption("Имя файла");
         fileList.addColumn((file) -> fileService.getFilesSize(file)).setCaption("KiB");
         fileList.addItemClickListener(this::gridItemClickListenerHandler);
-
+        fileList.addHeaderRowAt(0);
+        pathToDir = mergeGridRows(0);
     }
 
     private void gridItemClickListenerHandler(Grid.ItemClick<File> itemClick) {
@@ -106,33 +109,60 @@ public class MainView extends GridLayout implements View {
 
     private Resource getPicture(File file) {
         if(file.isFile()) return IconsContainer.FILE.getThemeResource();
-        else return IconsContainer.FOLDER.getThemeResource();
+        else if(file.isDirectory()) return IconsContainer.FOLDER.getThemeResource();
+        else throw new RuntimeException("вместо картинки пришел не файл и не директория");
     }
 
 
     private void fillFileList() {
+
         fileList.setItems(fileService.getFileList());
+        pathToDir.setText(fileService.getCurrentPath());
     }
 
-    private void createFileWidget(int columns) {
-        btnNewFolder = new Button("Новая Папка");
-        fileList = new Grid<>();
-
+    private void createFileWidget() {
+        HorizontalLayout buttonUpPanelLayout = new HorizontalLayout();
         HorizontalLayout nameOfFolderPanel = new HorizontalLayout();
-        folderOrFileName = new TextField();
-        folderOrFileName.setPlaceholder("Введите название");
+
+        btnNewFolder = new Button("Новая Папка");
+        btnUpDir = new Button("Уровень вверх");
         btnConfirmFolderOrFileName = new Button("Подтвердить");
         btnConfirmFolderOrFileName.setStyleName("tiny");
+
+        fileList = new Grid<>();
+        filePanelLayout = new VerticalLayout();
+
+        folderOrFileName = new TextField();
+        folderOrFileName.setPlaceholder("Введите название");
+
+        buttonUpPanelLayout.addComponents(btnNewFolder, btnUpDir);
         nameOfFolderPanel.addComponents(folderOrFileName, btnConfirmFolderOrFileName);
         nameOfFolderPanel.setVisible(false);
+
         createFileList();
         createAddNewFolderHandler();
-        addComponent(btnNewFolder, columns, 0);
-        addComponent(nameOfFolderPanel, columns, 1);
-        addComponent(fileList, columns, 2, columns, rows - 1);
+        createUpDirHandler();
+
+        filePanelLayout.addComponents(buttonUpPanelLayout, nameOfFolderPanel, fileList);
+        addComponent(filePanelLayout);
     }
 
-    private void createBtnColumns(int columns) {
+    private void createUpDirHandler() {
+        btnUpDir.addClickListener(clickEvent -> {
+            fileService.upDir();
+            fillFileList();
+        });
+    }
+
+    private HeaderCell mergeGridRows(int indexRow) {
+        HashSet<HeaderCell> hashSet = fileList.getColumns().stream().
+                map(column -> fileList.getHeaderRow(indexRow).getCell(column)).
+                distinct().
+                collect(Collectors.toCollection(HashSet::new));
+        return fileList.getHeaderRow(indexRow).join(hashSet);
+    }
+
+    private void createBtnColumns() {
         VerticalLayout btnColumnsLayout = new VerticalLayout();
         btnUpload = new Upload();
         btnUpload.setButtonCaption("Upload");
@@ -140,11 +170,11 @@ public class MainView extends GridLayout implements View {
         btnDelete = new Button("Delete");
         btnLogout = new Button("Logout");
         btnColumnsLayout.addComponents(btnUpload, btnDownload, btnDelete, btnLogout);
-        addComponent(btnColumnsLayout, columns, 1, columns, rows - 1 );
+        addComponent(btnColumnsLayout);
 
     }
 
-    private void createSearchPanel(int columns){
+    private void createSearchPanel(){
         Label nameOfFilterBlock = new Label("Поиск по файлам");
         searchWorkArea = new HorizontalLayout();
         searchPanelLayout = new VerticalLayout();
@@ -157,7 +187,7 @@ public class MainView extends GridLayout implements View {
         createBtnFindHandler();
         searchWorkArea.addComponents(searchFilterField, btnAddNewSearchFilter);
         searchPanelLayout.addComponents(searchWorkArea, nameOfFilterBlock , searchWorkArea, btnFind);
-        addComponent(searchPanelLayout, columns, 1, columns, rows - 1);
+        addComponent(searchPanelLayout);
     }
 
     private void createUploadReciever () {
