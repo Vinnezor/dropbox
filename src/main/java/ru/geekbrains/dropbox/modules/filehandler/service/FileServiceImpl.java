@@ -1,29 +1,34 @@
 package ru.geekbrains.dropbox.modules.filehandler.service;
 
 import lombok.Getter;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.geekbrains.dropbox.modules.authorization.dao.User;
-import ru.geekbrains.dropbox.modules.filehandler.dao.FileDaoImpl;
 import ru.geekbrains.dropbox.modules.filehandler.dao.FileDaoService;
 
 import javax.annotation.PostConstruct;
 import java.io.*;
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 
 @Service("fileService")
 public class FileServiceImpl implements FileService {
 
+
     public static final char SEPARATOR = File.separatorChar;
-    @Getter
-    private String currentPath;
-    private FileDaoService fileDao;
+
     @Value("${rootFilesDir}")
     private String filesPath;
+
+    private FileDaoService fileDao;
+
+    @Getter
+    private String currentPath;
+
     private String pathToUserDir;
 
     @Autowired

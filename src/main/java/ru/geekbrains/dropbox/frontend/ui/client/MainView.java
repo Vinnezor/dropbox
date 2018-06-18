@@ -1,6 +1,5 @@
 package ru.geekbrains.dropbox.frontend.ui.client;
 
-import com.vaadin.annotations.Theme;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.*;
@@ -9,6 +8,7 @@ import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.*;
 
 import com.vaadin.ui.components.grid.HeaderCell;
+import com.vaadin.ui.components.grid.HeaderRow;
 import com.vaadin.ui.renderers.ImageRenderer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 @Component
 @UIScope
 public class MainView extends HorizontalLayout implements View {
+
 
     @Qualifier("fileService")
     private FileService fileService;
@@ -92,8 +93,7 @@ public class MainView extends HorizontalLayout implements View {
         fileList.addColumn(File::getName).setCaption("Имя файла");
         fileList.addColumn((file) -> fileService.getFilesSize(file)).setCaption("KiB");
         fileList.addItemClickListener(this::gridItemClickListenerHandler);
-        fileList.addHeaderRowAt(0);
-        pathToDir = mergeGridRows(0);
+        pathToDir = mergeGridRows(fileList.addHeaderRowAt(0));
     }
 
     private void gridItemClickListenerHandler(Grid.ItemClick<File> itemClick) {
@@ -157,12 +157,12 @@ public class MainView extends HorizontalLayout implements View {
         });
     }
 
-    private HeaderCell mergeGridRows(int indexRow) {
+    private HeaderCell mergeGridRows(HeaderRow headerRow) {
         HashSet<HeaderCell> hashSet = fileList.getColumns().stream().
-                map(column -> fileList.getHeaderRow(indexRow).getCell(column)).
+                map(headerRow::getCell).
                 distinct().
                 collect(Collectors.toCollection(HashSet::new));
-        return fileList.getHeaderRow(indexRow).join(hashSet);
+        return headerRow.join(hashSet);
     }
 
     private void createBtnColumns() {

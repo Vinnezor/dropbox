@@ -14,9 +14,9 @@ public class FileController {
     @Qualifier("fileService")
     FileService fileService;
 
-    @RequestMapping(value = "/files/m1/{$fileName}", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @RequestMapping(value = "/files/{$fileName}", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
-    public FileSystemResource getFileMethod(@PathVariable ("fileName") String fileName) {
+    public FileSystemResource getFileMethod(@PathVariable("fileName") String fileName, @PathVariable("$fileName") String $fileName) {
         return new FileSystemResource(fileService.getFileByName(fileName));
     }
 }
