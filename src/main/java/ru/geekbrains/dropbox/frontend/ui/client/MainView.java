@@ -129,8 +129,11 @@ public class MainView extends HorizontalLayout implements View {
         btnConfirmFolderOrFileName = new Button("Подтвердить");
         btnConfirmFolderOrFileName.setStyleName("tiny");
 
-        fileList = new Grid<>();
         filePanelLayout = new VerticalLayout();
+        filePanelLayout.setWidth("900");
+
+        fileList = new Grid<>();
+        fileList.setSizeFull();
 
         folderOrFileName = new TextField();
         folderOrFileName.setPlaceholder("Введите название");

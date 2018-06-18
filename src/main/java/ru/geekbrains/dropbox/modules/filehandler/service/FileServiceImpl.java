@@ -24,7 +24,6 @@ public class FileServiceImpl implements FileService {
     private FileDaoService fileDao;
     @Value("${rootFilesDir}")
     private String filesPath;
-    private String userName;
     private String pathToUserDir;
 
     @Autowired
@@ -69,9 +68,8 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public void setUser(User user) {
-         userName = user.getUsername();
-         currentPath  = filesPath + SEPARATOR + userName;
-         pathToUserDir = currentPath;
+         pathToUserDir  = filesPath + SEPARATOR + user.getUsername();
+         currentPath = pathToUserDir;
          if (!fileDao.dirExists(currentPath)) fileDao.createDir(currentPath);
          fileDao.setPath(currentPath);
     }
